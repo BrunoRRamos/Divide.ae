@@ -1,17 +1,31 @@
 {
-  "name": "Divide.ae",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "divide.ae",
+  "private": true,
+  "engines": {
+    "node": ">=20.15.0"
+  },
+  "packageManager": "pnpm@9.6.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "build": "turbo run build",
+    "clean": "git clean -xdf node_modules",
+    "clean:workspaces": "turbo run clean",
+    "db:push": "turbo -F @/db-prisma push",
+    "db:studio": "turbo -F @/db-prisma studio",
+    "dev": "turbo watch dev",
+    "format": "turbo run format --continue -- --cache --cache-location .cache/.prettiercache",
+    "format:fix": "turbo run format --continue -- --write --cache --cache-location .cache/.prettiercache",
+    "lint": "turbo run lint --continue -- --cache --cache-location .cache/.eslintcache",
+    "lint:fix": "turbo run lint --continue -- --fix --cache --cache-location .cache/.eslintcache",
+    "lint:ws": "pnpm dlx sherif@latest",
+    "postinstall": "pnpm lint:ws",
+    "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
-    "prettier": "^2.5.1"
+    "@/prettier-config": "workspace:*",
+    "@turbo/gen": "^2.0.8",
+    "prettier": "catalog:",
+    "turbo": "^2.0.8",
+    "typescript": "catalog:"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "prettier": "@/prettier-config"
 }
