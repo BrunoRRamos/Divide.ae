@@ -10,7 +10,7 @@
     "dev": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
-    "lint": "eslint",
+    "lint": "pnpm generate && eslint",
     "push": "pnpm with-env prisma db push",
     "generate": "pnpm with-env prisma generate",
     "migrate:dev": "pnpm with-env prisma migrate dev",
