@@ -13,7 +13,7 @@
     "lint": "pnpm generate && eslint",
     "push": "pnpm with-env prisma db push",
     "generate": "pnpm with-env prisma generate",
-    "migrate:dev": "pnpm with-env prisma migrate dev",
+    "migrate": "pnpm with-env prisma migrate dev",
     "studio": "pnpm with-env prisma studio",
     "typecheck": "pnpm generate && tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
