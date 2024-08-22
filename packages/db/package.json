@@ -1,35 +1,36 @@
 {
-  "name": "@/trpc-api",
+  "name": "@/db",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    }
-  },
+  "main": "./src/index.ts",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "clean": "git clean -xdf .cache .turbo dist node_modules",
     "dev": "tsc",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "push": "pnpm with-env prisma db push",
+    "generate": "pnpm with-env prisma generate",
+    "migrate:dev": "pnpm with-env prisma migrate dev",
+    "studio": "pnpm with-env prisma studio",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@/db-drizzle": "workspace:*",
-    "@trpc/server": "catalog:",
-    "superjson": "2.2.1",
+    "@prisma/client": "^5.18.0",
+    "@t3-oss/env-core": "^0.10.1",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@/eslint-config": "workspace:*",
     "@/prettier-config": "workspace:*",
     "@/tsconfig": "workspace:*",
+    "dotenv-cli": "^7.4.2",
     "eslint": "catalog:",
     "prettier": "catalog:",
+    "prisma": "^5.18.0",
     "typescript": "catalog:"
   },
   "prettier": "@/prettier-config"

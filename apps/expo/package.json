@@ -34,7 +34,7 @@
     "nativewind": "~4.0.36",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
-    "react-native": "~0.74.3",
+    "react-native": "~0.75.2",
     "react-native-css-interop": "~0.0.34",
     "react-native-gesture-handler": "~2.16.2",
     "react-native-reanimated": "~3.10.1",
@@ -43,10 +43,10 @@
     "superjson": "2.2.1"
   },
   "devDependencies": {
-    "@/trpc-api": "workspace:*",
     "@/eslint-config": "workspace:*",
     "@/prettier-config": "workspace:*",
     "@/tailwind-config": "workspace:*",
+    "@/api": "workspace:*",
     "@/tsconfig": "workspace:*",
     "@babel/core": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
