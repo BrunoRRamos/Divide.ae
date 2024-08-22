@@ -17,47 +17,63 @@ enum NotificationType {
 }
 
 model User {
-  id                   String         @id @default(cuid())
-  name                 String
-  email                String         @unique
-  groups               Group[]        @relation("UserGroups")
-  ownerGroups          Group[]
-  recivedNotifications Notification[]
+  id    String @id @default(cuid())
+  name  String
+  email String @unique
+
+  groups                Group[]        @relation("UserGroups")
+  payments              Payment[]
+  myGroups              Group[] // Groups that the user created
+  receivedNotifications Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Group {
-  id               String    @id @default(cuid())
-  isRecorrent      Boolean
-  name             String
-  description      String
-  createdAt        DateTime  @default(now())
-  closedAt         DateTime
-  lastModification DateTime  @default(now())
-  fixtax           Float?    @default(0)
-  variableTax      Float?    @default(0)
-  users            User[]    @relation("UserGroups")
-  bills            Bill[]
-  payments         Payment[]
-  userId           String
-  user             User      @relation(fields: [userId], references: [id])
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  fixedTax    Float?   @default(0)
+  variableTax Float?   @default(0)
+  closedAt    DateTime
+
+  users    User[]    @relation("UserGroups")
+  bills    Bill[]
+  payments Payment[]
+  userId   String
+  user     User      @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Bill {
-  id          String @id @default(cuid())
-  name        String
-  description String
-  value       Float
-  quantity    Int    @default(1)
-  groupId     String
-  group       Group  @relation(fields: [groupId], references: [id])
+  id              String @id @default(cuid())
+  name            String
+  description     String
+  value           Float
+  quantity        Int    @default(1)
+  recurringPeriod Int? // Days here
+
+  groupId String
+  group   Group  @relation(fields: [groupId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Payment {
-  id          String   @id @default(cuid())
-  value       Float
-  paymentDate DateTime @default(now())
-  groupId     String
-  payment     Group    @relation(fields: [groupId], references: [id])
+  id       String  @id @default(cuid())
+  value    Float
+  accepted Boolean @default(false)
+  userId   String
+  user     User    @relation(fields: [userId], references: [id])
+  groupId  String
+  payment  Group   @relation(fields: [groupId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Notification {
@@ -67,4 +83,6 @@ model Notification {
   sentDate DateTime         @default(now())
   userId   String
   user     User             @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
 }
