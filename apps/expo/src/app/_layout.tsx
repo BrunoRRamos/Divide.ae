@@ -1,10 +1,10 @@
 import "@bacons/text-decoder/install";
 
+import { Fragment } from "react";
 // import { TRPCProvider } from "~/utils/api";
 
 import { Stack } from "expo-router";
 import { useColorScheme } from "nativewind";
-import { Fragment } from "react";
 
 import "../styles.css";
 

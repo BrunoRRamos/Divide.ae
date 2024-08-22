@@ -1,4 +1,5 @@
 import { execSync } from "node:child_process";
+
 import type { PlopTypes } from "@turbo/gen";
 
 interface PackageJson {

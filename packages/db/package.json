@@ -1,34 +1,21 @@
 {
-  "name": "@/db-prisma",
+  "name": "@/db",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
-    "./client": {
-      "types": "./dist/client.d.ts",
-      "default": "./dist/client.js"
-    },
-    "./schema": {
-      "types": "./dist/schema.d.ts",
-      "default": "./dist/schema.js"
-    }
-  },
+  "main": "./src/index.ts",
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm generate && tsc",
     "dev": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
-    "lint": "eslint",
+    "lint": "pnpm generate && eslint",
     "push": "pnpm with-env prisma db push",
     "generate": "pnpm with-env prisma generate",
-    "migrate:dev": "pnpm with-env prisma migrate dev",
+    "migrate": "pnpm with-env prisma migrate dev",
     "studio": "pnpm with-env prisma studio",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "typecheck": "pnpm generate && tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {

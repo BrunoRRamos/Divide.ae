@@ -3,7 +3,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 
 // import { auth, validateToken } from "@/auth";
-import { db } from "@/db-drizzle/client";
+import { db } from "@/db";
 
 /**
  * Isomorphic Session getter for API requests

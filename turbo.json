@@ -31,6 +31,10 @@
     "//#clean": {
       "cache": false
     },
+    "migrate": {
+      "cache": false,
+      "interactive": true
+    },
     "push": {
       "cache": false,
       "interactive": true
@@ -38,10 +42,6 @@
     "studio": {
       "cache": false,
       "persistent": true
-    },
-    "ui-add": {
-      "cache": false,
-      "interactive": true
     }
   },
   "globalEnv": [
