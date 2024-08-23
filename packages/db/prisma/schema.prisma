@@ -31,12 +31,12 @@ model User {
 }
 
 model Group {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   name        String
   description String
-  fixedTax    Float?   @default(0)
-  variableTax Float?   @default(0)
-  closedAt    DateTime
+  fixedTax    Float?    @default(0)
+  variableTax Float?    @default(0)
+  closedAt    DateTime?
 
   users    User[]    @relation("UserGroups")
   bills    Bill[]
@@ -51,7 +51,7 @@ model Group {
 model Bill {
   id              String @id @default(cuid())
   name            String
-  description     String
+  description     String?
   value           Float
   quantity        Int    @default(1)
   recurringPeriod Int? // Days here
