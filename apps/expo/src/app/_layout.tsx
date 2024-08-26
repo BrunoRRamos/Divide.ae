@@ -19,7 +19,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           contentStyle: {
-            backgroundColor: colorScheme == "dark" ? "#09090B" : "#FFFFFF",
+            backgroundColor: colorScheme == "light" ? "#09090B" : "#FFFFFF",
           },
         }}
       />
