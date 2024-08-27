@@ -4,11 +4,11 @@ import {
     Text
 } from 'react-native';
 
-const SegundaTela = ({ navigation }: { navigation: NavigationProp<any> }) => {
+const Feed = ({ navigation }: { navigation: NavigationProp<any> }) => {
     return (
         <Text>Em construcao</Text>
     );
 };
 
 
-export default SegundaTela;
+export default Feed;

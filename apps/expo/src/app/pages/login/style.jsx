@@ -81,6 +81,29 @@ const styles = StyleSheet.create({
         color: '#999',
         marginBottom: 20,
     },
+    checkboxSelected: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#FCECA3',
+    },
+    passwordContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 25,
+        marginBottom: 10,
+        paddingRight: 10,
+        width: '100%',
+        height: 50,
+        borderColor: '#ccc',
+
+    },
+    inputPassword: {
+        flex: 1,
+        padding: 10,
+    },
+
 });
 
 export default styles;

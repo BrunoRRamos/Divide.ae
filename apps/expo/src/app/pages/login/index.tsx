@@ -9,6 +9,7 @@ export default function Page({ navigation }: { navigation: NavigationProp<any> }
 
     const [emailAddress, setEmailAddress] = React.useState('')
     const [password, setPassword] = React.useState('')
+    const [isChecked, setIsChecked] = React.useState(false)
 
     const onSignInPress = React.useCallback(async () => {
         if (!isLoaded) {
@@ -23,7 +24,7 @@ export default function Page({ navigation }: { navigation: NavigationProp<any> }
 
             if (signInAttempt.status === 'complete') {
                 await setActive({ session: signInAttempt.createdSessionId })
-                navigation.navigate('Segunda Tela')
+                navigation.navigate('Feed')
             } else {
                 console.error(JSON.stringify(signInAttempt, null, 2))
             }
@@ -32,10 +33,14 @@ export default function Page({ navigation }: { navigation: NavigationProp<any> }
         }
     }, [isLoaded, emailAddress, password])
 
+    const toggleCheckbox = () => {
+        setIsChecked(!isChecked);
+    };
+
     return (
         <View style={styles.container}>
             <Image
-                source={require('./images/Logo.png')}
+                source={require('../../images/Logo.png')}
                 style={styles.logo} // Aplica o estilo logo
             />
             <TextInput
@@ -54,7 +59,9 @@ export default function Page({ navigation }: { navigation: NavigationProp<any> }
             />
             <View style={styles.optionsContainer}>
                 <View style={styles.checkboxContainer}>
-                    <TouchableOpacity style={styles.checkbox} />
+                    <TouchableOpacity style={styles.checkbox} onPress={toggleCheckbox}>
+                        {isChecked && <View style={styles.checkboxSelected} />}
+                    </TouchableOpacity>
                     <Text style={styles.checkboxText}>Salvar usuário</Text>
                 </View>
                 <TouchableOpacity>
@@ -71,25 +78,25 @@ export default function Page({ navigation }: { navigation: NavigationProp<any> }
             <View style={styles.socialContainer}>
                 <TouchableOpacity>
                     <Image
-                        source={require('./images/Logo.png')} // Icone do Facebook
+                        source={require('../../images/Logo.png')} // Icone do Facebook
                         style={styles.socialIcon}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <Image
-                        source={require('./images/Logo.png')} // Icone do Google
+                        source={require('../../images/Logo.png')} // Icone do Google
                         style={styles.socialIcon}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <Image
-                        source={require('./images/Logo.png')} // Icone do Twitter/X
+                        source={require('../../images/Logo.png')} // Icone do Twitter/X
                         style={styles.socialIcon}
                     />
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Segunda Tela')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Tela de cadastro')}>
                 <Text style={styles.signUpText}>Registre-se</Text>
             </TouchableOpacity>
         </View>
