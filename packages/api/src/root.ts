@@ -1,5 +1,5 @@
+import { groupRouter } from "./models/group/group";
 import { authRouter } from "./router/auth";
-import { groupRouter } from "./router/group";
 import { userRouter } from "./router/user";
 import { createTRPCRouter } from "./trpc";
 

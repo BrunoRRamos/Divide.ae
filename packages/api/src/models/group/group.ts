@@ -1,11 +1,8 @@
-import { createOneGroupProcedure } from "../models/group/controller/create";
-import { deleteOneGroupProcedure } from "../models/group/controller/delete";
-import {
-  getAllGroupsProcedure,
-  getOneGroupProcedure,
-} from "../models/group/controller/get";
-import { updateOneGroupProcedure } from "../models/group/controller/update";
-import { createTRPCRouter } from "../trpc";
+import { createTRPCRouter } from "../../trpc";
+import { createOneGroupProcedure } from "./controller/create";
+import { deleteOneGroupProcedure } from "./controller/delete";
+import { getAllGroupsProcedure, getOneGroupProcedure } from "./controller/get";
+import { updateOneGroupProcedure } from "./controller/update";
 
 const getRouter = createTRPCRouter({
   one: getOneGroupProcedure,
