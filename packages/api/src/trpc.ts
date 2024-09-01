@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 
 // import { auth, validateToken } from "@/auth";
 import { db } from "@/db";
+import { PrismockClient } from "prismock";
 
 /**
  * Isomorphic Session getter for API requests
@@ -41,7 +42,7 @@ export const createTRPCContext = (_opts: {
 
   return {
     // session,
-    db,
+    db: process.env.NODE_ENV === "test" ? new PrismockClient() : db, 
     // token: authToken,
   };
 };
