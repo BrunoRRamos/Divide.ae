@@ -1,16 +1,16 @@
 import { createTRPCRouter } from "../../trpc";
-import { createUser } from "./controllers/create";
-import { deleteUser } from "./controllers/delete";
-import { getUsers, getUserById } from "./controllers/get";
-import { updateUser } from "./controllers/update";
+import { createBill } from "./controllers/create";
+import { deleteBill } from "./controllers/delete";
+import { getAllBills, getBillById } from "./controllers/get";
+import { updateBill } from "./controllers/update";
 
-const createRouter = createTRPCRouter({
+const createBillRouter = createTRPCRouter({
   one: createBill,
 });
 
-const getRouter = createTRPCRouter({
+const getBillRouter = createTRPCRouter({
   one: getBillById,
-  all: getBills,
+  all: getAllBills,
 });
 
 const deleteBillRouter = createTRPCRouter({
@@ -21,9 +21,10 @@ const updateBillRouter = createTRPCRouter({
   one: updateBill,
 });
 
-export const userRouter = createTRPCRouter({
-  create: createRouter,
+export const billRouter = createTRPCRouter({
+  create: createBillRouter,
   update: updateBillRouter,
-  get: getRouter,
+  get: getBillRouter,
   delete: deleteBillRouter,
 });
+
