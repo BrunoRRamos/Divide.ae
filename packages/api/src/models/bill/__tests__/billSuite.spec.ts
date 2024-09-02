@@ -1,89 +1,152 @@
+import { beforeAll, expect, it } from "vitest";
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { createBill, deleteBill, getOneBillProcedure, getAllBillsProcedure, updateBillProcedure } from './billProcedures';
-import { z } from 'zod';
+import { createCaller, createTRPCContext } from "../../..";
 
-let ctx: any;
+beforeAll(() => {});
 
-beforeEach(() => {
-  ctx = {
-    db: {
-      bill: {
-        create: vi.fn(),
-        delete: vi.fn(),
-        findFirst: vi.fn(),
-        findMany: vi.fn(),
-        update: vi.fn(),
-      },
-    },
-  };
+it("should create a bill", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
+  const bill = await caller.bill.create.one({
+    name: "Internet",
+    value: 100,
+    quantity: 1,
+    groupId: "group-123",
+  });
+
+  expect(bill).toEqual(
+    expect.objectContaining({
+      name: "Internet",
+      value: 100,
+      quantity: 1,
+      groupId: "group-123",
+    }),
+  );
 });
 
-describe('Bill CRUD operations', () => {
-  it('should create a bill', async () => {
-    const input = {
-      name: 'Electricity Bill',
-      value: 100,
-      groupId: 'group-1',
-    };
+it("should not create a bill with missing required fields", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
 
-    ctx.db.bill.create.mockResolvedValue(input);
+  await expect(
+    caller.bill.create.one({
+      name: "Incomplete Bill",
+      value: 0,
+      groupId: "",
+    }),
+  ).rejects.toThrow();
+});
 
-    const result = await createBill.mutation({ ctx, input });
+it("should delete a bill", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
 
-    expect(ctx.db.bill.create).toHaveBeenCalledWith({ data: input });
-    expect(result).toEqual(input);
+  const bill = await caller.bill.create.one({
+    name: "Water Bill",
+    value: 50,
+    quantity: 1,
+    groupId: "group-456",
   });
 
-  it('should delete a bill', async () => {
-    const billId = 'bill-1';
+  const deletedBill = await caller.bill.delete.one(bill.id);
 
-    ctx.db.bill.delete.mockResolvedValue({ id: billId });
+  expect(deletedBill).toEqual(expect.objectContaining({ id: bill.id }));
 
-    const result = await deleteBill.mutation({ ctx, input: billId });
+  const fetchedBill = await caller.bill.get.one.byId({ id: bill.id });
+  expect(fetchedBill).toBeNull();
+});
 
-    expect(ctx.db.bill.delete).toHaveBeenCalledWith({ where: { id: billId } });
-    expect(result.id).toBe(billId);
+it("should not delete a non-existing bill", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
+
+  await expect(caller.bill.delete.one("non-existing-id")).rejects.toThrow();
+});
+
+it("should fetch a bill by ID", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
+
+  const bill = await caller.bill.create.one({
+    name: "Electricity",
+    value: 75,
+    quantity: 1,
+    groupId: "group-789",
   });
 
-  it('should get a bill by id', async () => {
-    const bill = { id: 'bill-1', name: 'Internet Bill', value: 50, groupId: 'group-1' };
+  const fetchedBill = await caller.bill.get.one.byId({ id: bill.id });
 
-    ctx.db.bill.findFirst.mockResolvedValue(bill);
+  expect(fetchedBill).toEqual(expect.objectContaining({ id: bill.id }));
+});
 
-    const result = await getOneBillProcedure.byId.query({ ctx, input: { id: 'bill-1' } });
+it("should return null for non-existing bill ID", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
 
-    expect(ctx.db.bill.findFirst).toHaveBeenCalledWith({ where: { id: 'bill-1' } });
-    expect(result).toEqual(bill);
+  const fetchedBill = await caller.bill.get.one.byId({ id: "non-existing-id" });
+
+  expect(fetchedBill).toBeNull();
+});
+
+it("should fetch all bills", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
+
+  await caller.bill.create.one({
+    name: "Internet",
+    value: 100,
+    quantity: 1,
+    groupId: "group-123",
+  });
+  await caller.bill.create.one({
+    name: "Electricity",
+    value: 75,
+    quantity: 1,
+    groupId: "group-789",
   });
 
-  it('should get all bills', async () => {
-    const bills = [
-      { id: 'bill-1', name: 'Internet Bill', value: 50, groupId: 'group-1' },
-      { id: 'bill-2', name: 'Water Bill', value: 30, groupId: 'group-1' },
-    ];
+  const bills = await caller.bill.get.all();
 
-    ctx.db.bill.findMany.mockResolvedValue(bills);
+  expect(bills.length).toBeGreaterThanOrEqual(2);
+});
 
-    const result = await getAllBillsProcedure.all.query({ ctx });
-
-    expect(ctx.db.bill.findMany).toHaveBeenCalled();
-    expect(result).toEqual(bills);
+it("should update a bill", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
+  const bill = await caller.bill.create.one({
+    name: "Gas Bill",
+    value: 60,
+    quantity: 1,
+    groupId: "group-555",
   });
 
-  it('should update a bill', async () => {
-    const input = {
-      id: 'bill-1',
-      groupId: 'group-1',
-      amount: 120,
-      dueAt: new Date(),
-    };
-
-    ctx.db.bill.update.mockResolvedValue(input);
-
-    const result = await updateBillProcedure.update.mutation({ ctx, input });
-
-    expect(ctx.db.bill.update).toHaveBeenCalledWith({ where: { id: input.id }, data: { groupId: 'group-1', amount: 120, dueAt: input.dueAt } });
-    expect(result).toEqual(input);
+  const updatedBill = await caller.bill.update.one({
+    id: bill.id,
+    groupId: "group-555",
+    amount: 80,
+    description: "Updated Gas Bill",
   });
+
+  expect(updatedBill).toEqual(
+    expect.objectContaining({
+      id: bill.id,
+      groupId: "group-555",
+      amount: 80,
+      description: "Updated Gas Bill",
+    }),
+  );
+});
+
+it("should not update a non-existing bill", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
+
+  await expect(
+    caller.bill.update.one({
+      id: "non-existing-id",
+      groupId: "group-555",
+      amount: 80,
+      description: "Updated Gas Bill",
+    }),
+  ).rejects.toThrow();
 });
