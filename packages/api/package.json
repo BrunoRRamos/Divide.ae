@@ -16,7 +16,9 @@
   "dependencies": {
     "@/db": "workspace:*",
     "@trpc/server": "catalog:",
+    "prismock": "^1.33.1",
     "superjson": "2.2.1",
+    "vitest": "^2.0.5",
     "zod": "catalog:"
   },
   "devDependencies": {
