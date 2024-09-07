@@ -23,7 +23,7 @@ const deleteRouter = createTRPCRouter({
 
 export const groupRouter = createTRPCRouter({
   get: getRouter,
-  cretate: createRouter,
+  create: createRouter,
   update: updateRouter,
   delete: deleteRouter,
 });

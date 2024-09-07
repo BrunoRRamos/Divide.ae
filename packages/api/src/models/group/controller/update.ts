@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { protectedProcedure } from "../../../trpc";
+import { publicProcedure } from "../../../trpc";
 
 const updateGroupSchema = z.object({
   id: z.string().cuid(),
@@ -12,11 +12,9 @@ const updateGroupSchema = z.object({
   updatedAt: z.date().default(() => new Date()),
 });
 
-export const updateOneGroupProcedure = {
-  update: protectedProcedure
-    .input(updateGroupSchema)
-    .mutation(({ ctx, input }) => {
-      const { id, ...data } = input;
-      return ctx.db.group.update({ where: { id: id }, data });
-    }),
-};
+export const updateOneGroupProcedure = publicProcedure
+  .input(updateGroupSchema)
+  .mutation(({ ctx, input }) => {
+    const { id, ...data } = input;
+    return ctx.db.group.update({ where: { id: id }, data });
+  });
