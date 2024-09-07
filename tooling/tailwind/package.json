@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./native": "./native.ts",
-    "./web": "./web.ts"
+    "./native": "./native.ts"
   },
   "license": "MIT",
   "scripts": {
@@ -15,8 +14,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "nativewind": "catalog:",
     "postcss": "^8.4.39",
-    "tailwindcss": "^3.4.4",
+    "tailwindcss": "catalog:",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {

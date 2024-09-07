@@ -13,9 +13,12 @@
     "src",
     "*.ts",
     "*.js",
+    "*.tsx",
     "*.mjs",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "env.d.ts",
+    "global.d.ts"
   ],
   "exclude": ["node_modules"]
 }
