@@ -2,7 +2,7 @@
   "name": "@/expo",
   "version": "0.1.0",
   "private": true,
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "scripts": {
     "clean": "git clean -xdf .cache .expo .turbo android ios node_modules",
     "dev": "expo start",
@@ -17,11 +17,17 @@
   "dependencies": {
     "@bacons/text-decoder": "^0.0.0",
     "@expo/metro-config": "^0.18.8",
+    "@react-native-async-storage/async-storage": "^2.0.0",
+    "@rn-primitives/label": "^1.0.3",
+    "@rn-primitives/slot": "^1.0.3",
+    "@rn-primitives/types": "^1.0.3",
     "@shopify/flash-list": "1.6.4",
     "@tanstack/react-query": "catalog:",
     "@trpc/client": "catalog:",
     "@trpc/react-query": "catalog:",
     "@trpc/server": "catalog:",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "expo": "~51.0.30",
     "expo-constants": "~16.0.2",
     "expo-dev-client": "~4.0.24",
@@ -31,7 +37,9 @@
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-web-browser": "^13.0.3",
-    "nativewind": "~4.0.36",
+    "formik": "^2.4.6",
+    "nativewind": "catalog:",
+    "phosphor-react-native": "^2.2.1",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
     "react-native": "~0.74.5",
@@ -40,7 +48,10 @@
     "react-native-reanimated": "~3.10.1",
     "react-native-safe-area-context": "~4.10.1",
     "react-native-screens": "~3.31.1",
-    "superjson": "2.2.1"
+    "react-native-svg": "^15.6.0",
+    "superjson": "2.2.1",
+    "tailwind-merge": "^2.5.2",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@/api": "workspace:*",
@@ -55,7 +66,7 @@
     "@types/react": "catalog:react18",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "tailwindcss": "^3.4.4",
+    "tailwindcss": "catalog:",
     "typescript": "catalog:"
   },
   "prettier": "@/prettier-config"

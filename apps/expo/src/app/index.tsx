@@ -1,43 +1,43 @@
-import { ClerkLoaded, ClerkProvider } from '@clerk/clerk-expo';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { default as TelaCadastro } from './pages/cadastro/telaCadastro';
-import Feed from './pages/feed/feed';
-import Page from './pages/login';
+import { useAuth } from "@clerk/clerk-expo";
+import { Redirect } from "expo-router";
+import { useState } from "react";
+import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-const Stack = createNativeStackNavigator();
+import { Button, Text } from "~/components/ui";
 
-const publishableKey = "pk_test_aG9seS1maWxseS0yNC5jbGVyay5hY2NvdW50cy5kZXYk"
+export default function Home() {
+  const [loading, setLoading] = useState(false);
+  const clerk = useAuth();
 
-if (!publishableKey) {
-  throw new Error(
-    'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
-  )
-}
+  if (!clerk.isLoaded) {
+    return (
+      <SafeAreaView>
+        <View className="flex h-full flex-col items-center justify-center">
+          <Text>loading</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
+  if (!clerk.isSignedIn) {
+    return <Redirect href="/sign-in" />;
+  }
 
-export default function Index() {
   return (
-
-    <ClerkProvider publishableKey={publishableKey}>
-      <ClerkLoaded>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Page"
-            component={Page}
-          />
-          <Stack.Screen
-            name="Tela de cadastro"
-            component={TelaCadastro}
-            options={{ title: 'Tela de cadastro' }}
-          />
-          <Stack.Screen
-            name="Feed"
-            component={Feed}
-            options={{ title: 'Feed' }}
-          />
-        </Stack.Navigator>
-      </ClerkLoaded>
-    </ClerkProvider>
-
+    <SafeAreaView>
+      <Text>Home</Text>
+      <Button
+        variant="destructive"
+        onPress={async () => {
+          setLoading(true);
+          await clerk.signOut();
+          setLoading(false);
+        }}
+        loading={loading}
+      >
+        <Text>Sign out</Text>
+      </Button>
+    </SafeAreaView>
   );
 }
