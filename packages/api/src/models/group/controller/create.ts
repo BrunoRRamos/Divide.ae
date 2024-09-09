@@ -8,7 +8,7 @@ const createGroupSchema = z.object({
   fixedTax: z.number().optional(),
   variableTax: z.number().optional(),
   closedAt: z.union([z.date(), z.string()]).nullable(),
-  userId: z.string().cuid(),
+  userId: z.string(),
   createdAt: z.date().default(() => new Date()),
   updatedAt: z.union([z.date(), z.string()]).optional(),
 });
