@@ -1,7 +1,7 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { publicProcedure } from "../../../trpc";
-import { TRPCError } from "@trpc/server";
 
 export const deleteOneGroupProcedure = publicProcedure
   .input(z.object({ id: z.string() }))
