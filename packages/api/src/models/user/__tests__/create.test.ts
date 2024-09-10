@@ -1,8 +1,11 @@
-import { beforeAll, expect, it } from "vitest";
+import { PrismockClient } from "prismock";
+import { expect, it, vi } from "vitest";
 
 import { createCaller, createTRPCContext } from "../../..";
 
-beforeAll(() => {});
+vi.mock("@/db", () => {
+  return { db: new PrismockClient() };
+});
 
 it("should create a user", async () => {
   const ctx = createTRPCContext({ headers: new Headers() });

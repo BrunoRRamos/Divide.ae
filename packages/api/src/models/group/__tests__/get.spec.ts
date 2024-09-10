@@ -1,7 +1,12 @@
-import { expect, it } from "vitest";
+import { PrismockClient } from "prismock";
+import { expect, it, vi } from "vitest";
 
 import { createCaller } from "../../..";
 import { createTRPCContext } from "../../../trpc";
+
+vi.mock("@/db", () => {
+  return { db: new PrismockClient() };
+});
 
 it("Should get a group by id with inexistent id", async () => {
   const ctx = createTRPCContext({ headers: new Headers() });
@@ -43,6 +48,16 @@ it("Should get all groups with no one group regsitred", async () => {
 it("Should get all groups", async () => {
   const ctx = createTRPCContext({ headers: new Headers() });
   const caller = createCaller(ctx);
+  await caller.group.create.one({
+    name: "Contas do mes",
+    description: "Organizar as contas do mes",
+    userId: "ewfewwv335dcv",
+    closedAt: null,
+    fixedTax: 0,
+    variableTax: 0,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
   const getAllGroups = await caller.group.get.many();
   expect(getAllGroups.length).toEqual(2);
 });

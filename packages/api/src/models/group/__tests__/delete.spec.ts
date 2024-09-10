@@ -1,7 +1,12 @@
-import { expect, it } from "vitest";
+import { PrismockClient } from "prismock";
+import { expect, it, vi } from "vitest";
 
 import { createCaller } from "../../..";
 import { createTRPCContext } from "../../../trpc";
+
+vi.mock("@/db", () => {
+  return { db: new PrismockClient() };
+});
 
 it("Should delete a group", async () => {
   const ctx = createTRPCContext({ headers: new Headers() });
