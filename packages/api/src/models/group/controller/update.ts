@@ -3,7 +3,7 @@ import { z } from "zod";
 import { publicProcedure } from "../../../trpc";
 
 const updateGroupSchema = z.object({
-  id: z.string().cuid(),
+  id: z.string(),
   name: z.string().optional(),
   description: z.string().optional(),
   fixedTax: z.number().optional(),

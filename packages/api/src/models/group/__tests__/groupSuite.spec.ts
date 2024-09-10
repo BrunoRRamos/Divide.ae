@@ -1,6 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { PrismockClient } from "prismock";
+import { describe, expect, it, vi } from "vitest";
 
 import { createCaller, createTRPCContext } from "../../..";
+
+vi.mock("@/db", () => {
+  return { db: new PrismockClient() };
+});
 
 async function setupBaseGroup() {
   const ctx = createTRPCContext({ headers: new Headers() });
@@ -19,7 +24,9 @@ async function setupBaseGroup() {
   return createGroup.id;
 }
 
-describe("Groups test suite: (create, get, update and delete)", () => {
+describe("Groups test suite: (create, get, update and delete)", async () => {
+  const baseGroupId = await setupBaseGroup();
+
   it("Should create a new group", async () => {
     const ctx = createTRPCContext({ headers: new Headers() });
     const caller = createCaller(ctx);
@@ -52,7 +59,6 @@ describe("Groups test suite: (create, get, update and delete)", () => {
   it("Should get a group by id", async () => {
     const ctx = createTRPCContext({ headers: new Headers() });
     const caller = createCaller(ctx);
-    const baseGroupId = await setupBaseGroup();
     const getById = await caller.group.get.one({ id: baseGroupId });
 
     expect(getById).toEqual(
@@ -73,9 +79,8 @@ describe("Groups test suite: (create, get, update and delete)", () => {
   it("Should get all groups", async () => {
     const ctx = createTRPCContext({ headers: new Headers() });
     const caller = createCaller(ctx);
-    const baseGroupId = await setupBaseGroup();
     const getAllGroups = await caller.group.get.many();
-    expect(getAllGroups.length).toEqual(1);
+    expect(getAllGroups.length).toEqual(2);
   });
 
   it("Should update a group", async () => {
@@ -98,12 +103,11 @@ describe("Groups test suite: (create, get, update and delete)", () => {
   it("Should delete a group", async () => {
     const ctx = createTRPCContext({ headers: new Headers() });
     const caller = createCaller(ctx);
-    const baseGroupId = await setupBaseGroup();
     const deleteGroup = await caller.group.delete.one({ id: baseGroupId });
     expect(deleteGroup).toEqual(
       expect.objectContaining({
-        name: "Aniversario de Bruno",
-        description: "Comprar torta, salgados e dois refrigerante",
+        name: "Contas do mes",
+        description: "Organizar as contas do mes",
       }),
     );
   });

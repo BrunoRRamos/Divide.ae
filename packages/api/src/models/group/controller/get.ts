@@ -7,9 +7,10 @@ export const getOneGroupProcedure = publicProcedure
   .input(z.object({ id: z.string() }))
   .query(({ ctx, input }) => {
     const group = ctx.db.group.findUnique({
+      
       where: { id: input.id },
     });
-
+    
     if (!group) {
       throw new TRPCError({
         code: "NOT_FOUND",
