@@ -9,7 +9,7 @@ export const getUsers = protectedProcedure.query(({ ctx }) => {
 export const getUserById = protectedProcedure
   .input(z.object({ id: z.string() }))
   .query(({ ctx, input }) => {
-    return ctx.db.user.findFirst({
+    return ctx.db.user.findUnique({
       where: { id: input.id },
     });
   });

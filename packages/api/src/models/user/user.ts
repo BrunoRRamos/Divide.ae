@@ -1,7 +1,7 @@
 import { createTRPCRouter } from "../../trpc";
 import { createUser } from "./controllers/create";
 import { deleteUser } from "./controllers/delete";
-import { getUsers, getUserById } from "./controllers/get";
+import { getUserById, getUsers } from "./controllers/get";
 import { updateUser } from "./controllers/update";
 
 const createRouter = createTRPCRouter({
