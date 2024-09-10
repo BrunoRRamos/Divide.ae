@@ -24,17 +24,9 @@
   "devDependencies": {
     "@/prettier-config": "workspace:*",
     "@turbo/gen": "^2.0.8",
-    "@types/react-native": "^0.73.0",
     "prettier": "catalog:",
     "turbo": "^2.0.8",
     "typescript": "catalog:"
   },
-  "prettier": "@/prettier-config",
-  "dependencies": {
-    "@clerk/clerk-expo": "^2.2.1",
-    "@react-navigation/native": "^6.1.18",
-    "@react-navigation/native-stack": "^6.11.0",
-    "expo-secure-store": "^13.0.2",
-    "react-native": "~0.74.5"
-  }
+  "prettier": "@/prettier-config"
 }
