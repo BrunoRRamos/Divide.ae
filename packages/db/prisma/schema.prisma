@@ -49,11 +49,11 @@ model Group {
 }
 
 model Bill {
-  id              String @id @default(cuid())
+  id              String  @id @default(cuid())
   name            String
   description     String?
   value           Float
-  quantity        Int    @default(1)
+  quantity        Int     @default(1)
   recurringPeriod Int? // Days here
 
   groupId String
@@ -70,7 +70,7 @@ model Payment {
   userId   String
   user     User    @relation(fields: [userId], references: [id])
   groupId  String
-  payment  Group   @relation(fields: [groupId], references: [id])
+  group    Group   @relation(fields: [groupId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
