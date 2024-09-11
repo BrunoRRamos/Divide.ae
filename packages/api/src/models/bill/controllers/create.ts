@@ -5,7 +5,7 @@ import { publicProcedure } from "../../../trpc";
 export const createBill = publicProcedure
   .input(
     z.object({
-      name: z.string(),
+      name: z.string().min(1, "name cannot be empty"),
       description: z.string().optional(),
       value: z.number(),
       quantity: z.number().default(1),

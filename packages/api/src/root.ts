@@ -1,4 +1,4 @@
-import { billRouter } from "./models/bill/bill";
+import { billRouter } from "./models/bill/router";
 import { groupRouter } from "./models/group/group";
 import { paymentRouter } from "./models/payment/router";
 import { userRouter } from "./models/user/user";
