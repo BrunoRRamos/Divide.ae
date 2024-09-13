@@ -29,6 +29,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Bill      Bill[]
 }
 
 model Group {
@@ -57,6 +58,8 @@ model Bill {
   quantity        Int     @default(1)
   recurringPeriod Int? // Days here
 
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
   groupId String
   group   Group  @relation(fields: [groupId], references: [id])
 

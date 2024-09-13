@@ -3,15 +3,13 @@ import { z } from "zod";
 
 import { protectedProcedure } from "../../../trpc";
 
-// Define the input schema for the updateBill mutation
 const updateBillInput = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string().optional(),
   value: z.number(),
   quantity: z.number().optional(),
-  recurringPeriod: z.number().optional(), // Days
-  groupId: z.string(),
+  recurringPeriod: z.number().optional(),
 });
 
 export const updateBill = protectedProcedure
@@ -31,7 +29,7 @@ export const updateBill = protectedProcedure
         value: input.value,
         quantity: input.quantity,
         recurringPeriod: input.recurringPeriod,
-        groupId: input.groupId,
+        
       },
     });
   });

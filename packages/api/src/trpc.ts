@@ -2,10 +2,10 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { db } from "@/db";
 import type { Session } from "@clerk/clerk-sdk-node";
 import type { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
 import type { CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
+import { db } from "@/db";
 
 import { clerkClient } from "./lib/clerk";
 

@@ -18,6 +18,7 @@ it("should update a bill", async () => {
     quantity: 1,
     recurringPeriod: 30,
     groupId: "some-group-id",
+    userId: "some",
   });
 
   const updatedBill = await caller.bill.update.one({
@@ -25,7 +26,6 @@ it("should update a bill", async () => {
     name: "Yearly Subscription",
     value: 1200.0,
     quantity: 1,
-    groupId: "",
   });
 
   expect(updatedBill).toEqual(
@@ -33,6 +33,7 @@ it("should update a bill", async () => {
       id: bill.id,
       name: "Yearly Subscription",
       value: 1200.0,
+      quantity: 1,
     }),
   );
 });
@@ -46,7 +47,6 @@ it("should not update a bill that does not exist", async () => {
       id: "non-existing-id",
       name: "Yearly Subscription",
       value: 1200.0,
-      groupId: "",
     }),
   ).rejects.toThrowError("Bill not found");
 });
