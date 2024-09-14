@@ -1,38 +1,28 @@
 {
-  "name": "@/api",
+  "name": "@/server",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
-  "main": "./src/index.ts",
-  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "pnpm with-env tsx --watch --env-file=../../.env src/index.ts",
+    "dev": "pnpm with-env tsx --watch src/index.ts",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@/db": "workspace:*",
+    "@/api": "workspace:*",
     "@trpc/server": "catalog:",
-    "ioredis": "^5.4.1",
     "dotenv-cli": "^7.4.2",
-    "prismock": "^1.33.1",
-    "superjson": "2.2.1",
-    "vitest": "^2.0.5",
-    "ws": "^8.18.0",
-    "zod": "catalog:"
+    "tsx": "^4.19.1",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@/eslint-config": "workspace:*",
     "@/prettier-config": "workspace:*",
     "@/tsconfig": "workspace:*",
     "@types/ws": "^8.5.12",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
-    "tsx": "catalog:",
     "typescript": "catalog:"
   },
   "prettier": "@/prettier-config"

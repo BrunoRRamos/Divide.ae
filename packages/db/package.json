@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm generate && tsc",
-    "dev": "tsc",
+    "dev": "pnpm with-env tsx --watch src/index.ts",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "pnpm generate && eslint",
@@ -30,7 +30,7 @@
     "dotenv-cli": "^7.4.2",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "prisma": "^5.19.1",
+    "tsx": "catalog:",
     "typescript": "catalog:"
   },
   "prettier": "@/prettier-config"

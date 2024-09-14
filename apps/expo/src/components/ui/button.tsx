@@ -2,7 +2,7 @@ import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Pressable, View } from "react-native";
 import { cva } from "class-variance-authority";
-import { CircleNotch } from "phosphor-react-native";
+import { Loader2 } from "lucide-react-native";
 
 import { TextClassContext } from "~/components/ui/text";
 import { cn } from "~/lib/utils";
@@ -84,7 +84,7 @@ const Button = React.forwardRef<
           <View className="flex flex-row items-center gap-2">
             {loading && (
               <View className="animate-spin">
-                <CircleNotch />
+                <Loader2 />
               </View>
             )}
             {typeof children === "function" ? children(s) : children}

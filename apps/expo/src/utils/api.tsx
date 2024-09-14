@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink, loggerLink } from "@trpc/client";
+import { httpLink, loggerLink, splitLink, wsLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import superjson from "superjson";
 
@@ -8,6 +8,7 @@ import type { AppRouter } from "@/api";
 
 import { getBaseUrl } from "./base-url";
 import { getToken } from "./session-store";
+import { wsClient } from "./websocket";
 
 /**
  * A set of typesafe hooks for consuming your API.
@@ -30,18 +31,25 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
             (opts.direction === "down" && opts.result instanceof Error),
           colorMode: "ansi",
         }),
-        httpBatchLink({
-          transformer: superjson,
-          url: `${getBaseUrl()}/api/trpc`,
-          headers() {
-            const headers = new Map<string, string>();
-            headers.set("x-trpc-source", "expo-react");
+        splitLink({
+          condition: (opts) => opts.type === "subscription",
+          true: wsLink({
+            client: wsClient,
+            transformer: superjson,
+          }),
+          false: httpLink({
+            transformer: superjson,
+            url: getBaseUrl(),
+            headers() {
+              const headers = new Map<string, string>();
+              headers.set("x-trpc-source", "expo-react");
 
-            const token = getToken();
-            if (token) headers.set("Authorization", `Bearer ${token}`);
+              const token = getToken();
+              if (token) headers.set("Authorization", `Bearer ${token}`);
 
-            return Object.fromEntries(headers);
-          },
+              return Object.fromEntries(headers);
+            },
+          }),
         }),
       ],
     }),
