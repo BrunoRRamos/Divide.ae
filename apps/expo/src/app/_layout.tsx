@@ -7,11 +7,11 @@ import { StatusBar } from "expo-status-bar";
 import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemeProvider } from "@react-navigation/native";
-import { IconContext } from "phosphor-react-native";
 
 import { useColorScheme } from "~/hooks/useColorScheme";
 import { tokenCache } from "~/lib/clerk";
 import { DARK_THEME, LIGHT_THEME } from "~/lib/constants";
+import { TRPCProvider } from "~/utils/api";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -52,13 +52,13 @@ export default function RootLayout() {
   }
 
   return (
-    <ClerkProvider
-      tokenCache={tokenCache}
-      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
-    >
-      <ClerkLoaded>
-        <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-          <IconContext.Provider value={{ size: 24 }}>
+    <TRPCProvider>
+      <ClerkProvider
+        tokenCache={tokenCache}
+        publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
+      >
+        <ClerkLoaded>
+          <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
             <SafeAreaProvider>
               <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
               <Stack
@@ -66,9 +66,9 @@ export default function RootLayout() {
                 initialRouteName="home"
               />
             </SafeAreaProvider>
-          </IconContext.Provider>
-        </ThemeProvider>
-      </ClerkLoaded>
-    </ClerkProvider>
+          </ThemeProvider>
+        </ClerkLoaded>
+      </ClerkProvider>
+    </TRPCProvider>
   );
 }
