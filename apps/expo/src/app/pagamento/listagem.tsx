@@ -1,20 +1,74 @@
 import { FontAwesome5 } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Platform, Text, TouchableOpacity, View } from 'react-native';
+import { supabase } from '~/lib/supabase';
+
 
 const PaymentMethods = () => {
-  const [selected, setSelected] = useState<string | null>(null);
-
-  const handleSelect = (method: 'Pix' | 'Cartao' | 'Dinheiro') => {
-    setSelected(method);
-  };
-
-  // const handleNext = () => {
-  //   if (selected) {
-  //     router.push('/pagamento/Pagamento');
-  //   }
-  // };
-
+ 
+    const [selected, setSelected] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
+  
+    const handleSelect = (method: 'Pix' | 'Cartao' | 'Dinheiro') => {
+      setSelected(method);
+    };
+  
+    const pickImage = async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Desculpe, precisamos de permissão para acessar a galeria!');
+          return;
+        }
+      }
+  
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
+  
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        if (asset?.uri) {
+          uploadImage(asset.uri);
+        } else {
+          Alert.alert('Erro', 'Não foi possível obter a URI da imagem.');
+        }
+      } else {
+        Alert.alert('Nenhuma imagem selecionada');
+      }
+    
+    };
+  
+    const uploadImage = async (uri: string) => {
+      try {
+        setUploading(true);
+        const response = await fetch(uri);
+        const blob = await response.blob();
+  
+        const fileExt = uri.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `public/${fileName}`;
+       
+        let { error: uploadError } = await supabase.storage
+          .from('avatars') 
+          
+          .upload(filePath, blob);
+  
+        if (uploadError) {
+          throw uploadError;
+        }
+  
+        Alert.alert('Upload feito com sucesso!');
+      } catch (error) {
+        Alert.alert('Erro ao fazer upload da imagem: ' + error);
+      } finally {
+        setUploading(false);
+      }
+    };
+  
   return (
     <View className="flex-3 p-6 ">
       <Text className="text-xl mb-6">Qual será a forma de pagamento?</Text>
