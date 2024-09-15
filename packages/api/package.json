@@ -17,8 +17,8 @@
   "dependencies": {
     "@/db": "workspace:*",
     "@trpc/server": "catalog:",
-    "ioredis": "^5.4.1",
     "dotenv-cli": "^7.4.2",
+    "ioredis": "^5.4.1",
     "prismock": "^1.33.1",
     "superjson": "2.2.1",
     "vitest": "^2.0.5",
