@@ -17,9 +17,10 @@ enum NotificationType {
 }
 
 model User {
-  id    String @id @default(cuid())
-  name  String
-  email String @unique
+  id      String @id @default(cuid())
+  name    String
+  email   String @unique
+  clerkId String @unique
 
   groups                Group[]        @relation("UserGroups")
   payments              Payment[]
@@ -33,7 +34,7 @@ model User {
 model Group {
   id          String    @id @default(cuid())
   name        String
-  description String
+  description String?
   fixedTax    Float?    @default(0)
   variableTax Float?    @default(0)
   closedAt    DateTime?

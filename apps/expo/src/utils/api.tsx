@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getClerkInstance } from "@clerk/clerk-expo";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink, splitLink, wsLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
@@ -7,7 +8,6 @@ import superjson from "superjson";
 import type { AppRouter } from "@/api";
 
 import { getBaseUrl } from "./base-url";
-import { getToken } from "./session-store";
 import { wsClient } from "./websocket";
 
 /**
@@ -40,12 +40,14 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
           false: httpBatchLink({
             transformer: superjson,
             url: getBaseUrl(),
-            headers() {
+            async headers() {
               const headers = new Map<string, string>();
+              const token = await getClerkInstance().session?.getToken();
               headers.set("x-trpc-source", "expo-react");
 
-              const token = getToken();
-              if (token) headers.set("Authorization", `Bearer ${token}`);
+              if (token) {
+                headers.set("Authorization", `Bearer ${token}`);
+              }
 
               return Object.fromEntries(headers);
             },

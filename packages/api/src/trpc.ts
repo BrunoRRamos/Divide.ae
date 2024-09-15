@@ -1,21 +1,13 @@
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-// import { auth, validateToken } from "@/auth";
 import { db } from "@/db";
+import type { Session } from "@clerk/clerk-sdk-node";
+import type { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
+import type { CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
 
-/**
- * Isomorphic Session getter for API requests
- * - Expo requests will have a session token in the Authorization header
- * - Next.js requests will have a session token in cookies
- */
-//
-// const isomorphicGetSession = async (headers: Headers) => {
-//   const authToken = headers.get("Authorization") ?? null;
-//   if (authToken) return validateToken(authToken);
-//   return auth();
-// };
+import { clerkClient } from "./lib/clerk";
 
 /**
  * 1. CONTEXT
@@ -29,20 +21,28 @@ import { db } from "@/db";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = (_opts: {
-  headers: Headers;
-  // session: Session | null;
-}) => {
-  // const authToken = opts.headers.get("Authorization") ?? null;
-  // const session = await isomorphicGetSession(opts.headers);
+export const createTRPCContext = async (
+  opts: CreateHTTPContextOptions | CreateWSSContextFnOptions,
+) => {
+  const token =
+    opts.req.headers.authorization?.replace("Bearer ", "").trim() ?? null;
+  let session: Session | null = null;
 
-  // const source = opts.headers.get("x-trpc-source") ?? "unknown";
-  // console.log(">>> tRPC Request from", source, "by", session?.user);
+  if (token) {
+    try {
+      const verifiedToken = await clerkClient.verifyToken(token);
+      session = await clerkClient.sessions.getSession(verifiedToken.sid);
+    } catch {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+  }
+
+  const source = opts.req.headers["trpc-x-source"] ?? "unknown";
+  console.log(">>> tRPC Request from", source, "by", session?.userId);
 
   return {
-    // session,
     db,
-    // token: authToken,
+    session,
   };
 };
 
@@ -124,14 +124,26 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  */
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
-  .use(({ ctx: _ctx, next }) => {
-    // if (!ctx.session?.user) {
-    //   throw new TRPCError({ code: "UNAUTHORIZED" });
-    // }
+  .use(async ({ ctx, next }) => {
+    if (!ctx.session) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
 
-    return next({
-      ctx: {
-        // session: { ...ctx.session, user: ctx.session.user },
-      },
+    // it would be better to user clerk webhook
+    const user = await ctx.db.user.findUnique({
+      where: { clerkId: ctx.session.userId },
     });
+
+    if (!user) {
+      const clerkUser = await clerkClient.users.getUser(ctx.session.userId);
+      await ctx.db.user.create({
+        data: {
+          email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
+          name: clerkUser.username ?? "",
+          clerkId: ctx.session.userId,
+        },
+      });
+    }
+
+    return next();
   });
