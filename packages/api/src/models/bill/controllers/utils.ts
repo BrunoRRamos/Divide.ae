@@ -56,8 +56,11 @@ export const isUserInGroup = async ({
   const group = await ctx.db.group.findUnique({
     where: { id: groupId, users: { some: { id: userId } } },
   });
+  if (!group) {
+    throw new Error("Group not found");
+  }
 
-  return !!group ;
+  return !!group;
 };
 
 
@@ -70,5 +73,6 @@ export const isUserOwnerOfBill = async ({
   if (!bill) {
     throw new Error("Bill not found");
   }
-  return bill.userId === userId;
+  const isAdmin = await isGroupAdmin({ctx, groupId: bill.groupId, userId: userId});
+  return (bill.userId === userId || isAdmin);
 };

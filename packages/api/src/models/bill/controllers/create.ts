@@ -20,6 +20,7 @@ export const createBill = publicProcedure
     const group = await ctx.db.group.findUnique({
       where: { id: input.groupId },
     });
+    
     if (!group) {
       throw new TRPCError({
         code: "NOT_FOUND",

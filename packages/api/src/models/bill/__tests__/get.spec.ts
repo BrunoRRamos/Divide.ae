@@ -41,62 +41,138 @@ it("should get a created bill", async () => {
     groupId: group.id,
     userId: user.id,
   });
-  const getBill = await caller.bill.get.one({ id: bill.id });
+  const getBill = await caller.bill.get.one({
+    billId: bill.id,
+    userId: user.id,
+  });
   expect(getBill).toEqual(
     expect.objectContaining({
-      id: bill.id,
-      name: "Rent",
-      description: "Monthly apartment rent",
-      value: 1200.5,
+      name: "Electricity",
+      description: "Monthly electricity bill",
+      value: 150.75,
       quantity: 1,
       recurringPeriod: 30,
-      groupId: "groupIdExample",
+      groupId: group.id,
+      userId: user.id,
     }),
   );
 });
 
-it("should not get an uncreated bill", async () => {
+it("should get all bills from a group", async () => {
   const ctx = createTRPCContext({ headers: new Headers() });
   const caller = createCaller(ctx);
-  const bill = await caller.bill.get.one({ id: "notCreatedId" });
-  expect(bill).toBeNull();
+
+  const user = await caller.user.create.one({
+    name: "Caique",
+    email: "caique@gmail.com",
+  });
+
+  const group = await caller.group.create.one({
+    name: "Aniversario de Caique",
+    description: "Comprar torta, salgados e refrigerante",
+    userId: user.id,
+    closedAt: null,
+    fixedTax: 0,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const bill1 = await caller.bill.create.one({
+    name: "Electricity",
+    description: "Monthly electricity bill",
+    value: 150.75,
+    quantity: 1,
+    recurringPeriod: 30,
+    groupId: group.id,
+    userId: user.id,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const bill2 = await caller.bill.create.one({
+    name: "Gas",
+    description: "Monthly gas bill",
+    value: 100.75,
+    quantity: 1,
+    recurringPeriod: 30,
+    groupId: group.id,
+    userId: user.id,
+  });
+
+  const bills = await caller.bill.get.all({
+    groupId: group.id,
+    userId: user.id,
+  });
+
+  expect(bills.length).toEqual(2);
+
+  expect(bills).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        name: "Electricity",
+        value: 150.75,
+      }),
+      expect.objectContaining({
+        name: "Gas",
+        value: 100.75,
+      }),
+    ]),
+  );
 });
 
-// it("should get all bills from a group", async () => {
-//   const ctx = createTRPCContext({ headers: new Headers() });
-//   const caller = createCaller(ctx);
+//Não ta funcionando corretamente
+it("should not get a bill from another group", async () => {
+  const ctx = createTRPCContext({ headers: new Headers() });
+  const caller = createCaller(ctx);
 
-//   await caller.group.create.one({
-//     name: "Aniversario de Caique",
-//     description: "Comprar torta, salgados e refrigerante",
-//     userId: "kffjjek3345",
-//     closedAt: null,
-//     fixedTax: 0,
-//     variableTax: 0,
-//     createdAt: new Date(),
-//     updatedAt: new Date(),
-//   });
+  const user1 = await caller.user.create.one({
+    name: "Caique",
+    email: "caique@gmail.com",
+  });
 
-//   await caller.bill.create.one({
-//     name: "saguado",
-//     description: "Monthly apartment rent",
-//     value: 1200.5,
-//     quantity: 1,
-//     recurringPeriod: 30,
-//     groupId: "Aniversario de Caique",
-//     userId: "kffjjek3345",
-//   });
+  const group1 = await caller.group.create.one({
+    name: "Aniversario de Caique",
+    description: "Comprar torta, salgados e refrigerante",
+    userId: user1.id,
+    closedAt: null,
+    fixedTax: 0,
+  });
 
-//   await caller.bill.create.one({
-//     name: "dolce",
-//     description: "Monthly utilities",
-//     value: 200.75,
-//     quantity: 1,
-//     recurringPeriod: 30,
-//     groupId: "Aniversario de Caique",
-//     userId: "kffjjek3345",
-//   });
+  const bill1 = await caller.bill.create.one({
+    name: "Electricity",
+    description: "Monthly electricity bill",
+    value: 150.75,
+    quantity: 1,
+    recurringPeriod: 30,
+    groupId: group1.id,
+    userId: user1.id,
+  });
 
-//   const bills = await caller.bill.get.all({ groupId: "Aniversario de Caique" });
-//   expect(bills.length).toEqual(2);
-// });
+  const user2 = await caller.user.create.one({
+    name: "Joao",
+    email: "joao@gmail.com",
+  });
+
+  const group2 = await caller.group.create.one({
+    name: "Aniversario de Joao",
+    description: "Comprar torta, salgados e refrigerante",
+    userId: user2.id,
+    closedAt: null,
+    fixedTax: 0,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const bill2 = await caller.bill.create.one({
+    name: "Water",
+    description: "Monthly water bill",
+    value: 100.75,
+    quantity: 1,
+    recurringPeriod: 30,
+    groupId: group2.id,
+    userId: user2.id,
+  });
+  await expect(
+    caller.bill.get.one({
+      billId: bill1.id,
+      userId: user2.id,
+    }),
+  ).rejects.toThrowError("User is not the owner of the bill");
+});

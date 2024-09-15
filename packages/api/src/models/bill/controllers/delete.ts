@@ -13,11 +13,11 @@ export const deleteBill = protectedProcedure
         throw new TRPCError({ code: "NOT_FOUND", message: "Bill not found" });
       });
     if (
-      await isUserOwnerOfBill({
+      !(await isUserOwnerOfBill({
         ctx,
         billId: input.billId,
         userId: input.userId,
-      })
+      }))
     ) {
       throw new TRPCError({
         code: "FORBIDDEN",
