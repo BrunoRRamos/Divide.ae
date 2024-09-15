@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@/db": "workspace:*",
+    "@clerk/clerk-sdk-node": "^5.0.38",
     "@trpc/server": "catalog:",
     "dotenv-cli": "^7.4.2",
     "ioredis": "^5.4.1",

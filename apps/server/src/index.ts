@@ -8,10 +8,7 @@ const port = parseInt(process.env.PORT || "3000");
 
 createHTTPServer({
   router: appRouter,
-  createContext: (ctx) =>
-    createTRPCContext({
-      headers: new Headers(ctx.req.headers as Record<string, string>),
-    }),
+  createContext: createTRPCContext,
 }).listen(port + 1, () => {
   console.log("🚀 Server started at http://localhost:" + (port + 1));
 });
@@ -23,11 +20,7 @@ const wss = new ws.Server({
 const handler = applyWSSHandler({
   wss,
   router: appRouter,
-  createContext: (opt) => {
-    return createTRPCContext({
-      headers: new Headers(opt.req.headers as Record<string, string>),
-    });
-  },
+  createContext: createTRPCContext,
   // Enable heartbeat messages to keep connection open (disabled by default)
   keepAlive: {
     enabled: true,
