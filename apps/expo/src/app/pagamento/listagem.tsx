@@ -1,49 +1,62 @@
-import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Button, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 const PaymentMethods = () => {
-    const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const [selected, setSelected] = useState<string | null>(null);
 
-  const paymentMethods = [
-    { id: 'pix', name: 'Pix', icon: 'payments', label: 'Pix' },
-    { id: 'card', name: 'Cartão', icon: 'credit-card', label: 'Cartão' },
-    { id: 'cash', name: 'Dinheiro', icon: 'attach-money', label: 'Dinheiro' },
-  ];
+  const handleSelect = (method: 'Pix' | 'Cartao' | 'Dinheiro') => {
+    setSelected(method);
+  };
+
+  // const handleNext = () => {
+  //   if (selected) {
+  //     router.push('/pagamento/Pagamento');
+  //   }
+  // };
 
   return (
-    <View className="flex-1 bg-white p-4">
-      <TouchableOpacity className="absolute top-4 left-4">
-        <MaterialIcons name="arrow-back" size={24} />
-      </TouchableOpacity>
+    <View className="flex-3 p-6 ">
+      <Text className="text-xl mb-6">Qual será a forma de pagamento?</Text>
+      <View className="space-y-4">
+      <TouchableOpacity
+          onPress={() => handleSelect('Pix')}
+          className={`border-transparent shadow-2xl mb-3 p-4 flex-row items-center rounded-lg border ${
+            selected === 'Pix' ? 'bg-gray-200' : 'bg-white'
+          }`}
+        >
+           <FontAwesome5 name="qrcode" size={24} color={selected === 'Pix' ? '#00bfa5' : 'gray'} />
+          <Text className="text-lg">  Pix</Text>
+        </TouchableOpacity>
 
-      <Text className="text-center text-xl font-bold mb-2">
-        Métodos de pagamento
-      </Text>
-      <Text className="text-center text-lg mb-4">
-        Qual será a forma de pagamento?
-      </Text>
+        <TouchableOpacity
+          onPress={() => handleSelect('Cartao')}
+          className={`border-transparent shadow-2xl mb-3 p-4 flex-row items-center rounded-lg border ${
+            selected === 'Cartao' ? 'bg-gray-200' : 'bg-white'
+          }`}
+        >
+           <FontAwesome5 name="credit-card" size={24} color={selected === 'Cartao' ? 'black' : 'gray'} />
+          <Text className="text-lg">  Cartão</Text>
+        </TouchableOpacity>
 
-      <View className="mt-5">
-        {paymentMethods.map((method) => (
-          <TouchableOpacity
-            key={method.id}
-            className={
-              'flex-row items-center p-4 border rounded-lg mb-3'
-            }
-            onPress={() => setSelectedMethod(method.id)}
-          >
-            <MaterialIcons className={method.icon} size={24} />
-            <Text className="ml-3 text-lg">{method.label}</Text>
-          </TouchableOpacity>
-        ))}
+        <TouchableOpacity
+          onPress={() => handleSelect('Dinheiro')}
+          className={`border-transparent shadow-2xl p-4 flex-row items-center rounded-lg border ${
+            selected === 'Dinheiro' ? 'bg-gray-200' : 'bg-white'
+          }`}
+        >
+           <FontAwesome5 name="dollar-sign" size={24} color={selected === 'Dinheiro' ? '#00bfa5' : 'gray'} />
+          <Text className="text-lg">  Dinheiro</Text>
+        </TouchableOpacity>
       </View>
 
-      <Button
-        title="Avançar"
-        onPress={() => console.log(`Selected method: ${selectedMethod}`)}
-        disabled={!selectedMethod}
-      />
+      <TouchableOpacity
+        // onPress={}
+        className="mt-10 p-4 bg-gray-300 rounded-lg items-center"
+        disabled={!selected}
+      >
+        <Text className="text-lg">Avançar</Text>
+      </TouchableOpacity>
     </View>
   );
 };
