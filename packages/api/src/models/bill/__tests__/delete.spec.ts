@@ -40,8 +40,12 @@ it("should delete a bill", async () => {
   });
   expect(deleteBill).toEqual(expect.objectContaining({ id: bill.id }));
 
-  const deletedBill = await caller.bill.get.one({ billId: bill.id, userId: user.id });
-  expect(deletedBill).toBeNull();
+  await expect(
+    caller.bill.get.one({
+      billId: bill.id,
+      userId: user.id,
+    }),
+  ).rejects.toThrowError("Bill not found");
 });
 
 it("should not delete a bill that does not exist", async () => {
@@ -107,13 +111,16 @@ it("should not delete another user's bill", async () => {
     userId: user2.id,
   });
 
-  await expect(caller.bill.delete
-    .one({
+  await expect(
+    caller.bill.delete.one({
       billId: bill1.id,
       userId: user2.id,
-    })
+    }),
   ).rejects.toThrowError("User is not the owner of the bill");
 
-  const deletedBill = await caller.bill.get.one({ billId: bill1.id, userId: user1.id });
+  const deletedBill = await caller.bill.get.one({
+    billId: bill1.id,
+    userId: user1.id,
+  });
   expect(deletedBill).toEqual(expect.objectContaining(bill1));
 });
