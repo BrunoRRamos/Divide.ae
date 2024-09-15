@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect } from "expo-router";
 import { useAuth } from "@clerk/clerk-expo";
 
+import { ScreenView } from "~/components/layout/ScreenView";
 import { Button, Text } from "~/components/ui";
 
 export default function Home() {
@@ -25,7 +26,7 @@ export default function Home() {
   }
 
   return (
-    <SafeAreaView>
+    <ScreenView>
       <Text>Home</Text>
       <Button
         variant="destructive"
@@ -38,6 +39,6 @@ export default function Home() {
       >
         <Text>Sign out</Text>
       </Button>
-    </SafeAreaView>
+    </ScreenView>
   );
 }

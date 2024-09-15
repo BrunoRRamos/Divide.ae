@@ -84,7 +84,7 @@ const Button = React.forwardRef<
           <View className="flex flex-row items-center gap-2">
             {loading && (
               <View className="animate-spin">
-                <Loader2 />
+                <Loader2 color="black" />
               </View>
             )}
             {typeof children === "function" ? children(s) : children}
