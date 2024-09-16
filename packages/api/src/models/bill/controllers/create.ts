@@ -13,30 +13,34 @@ export const createBill = publicProcedure
       quantity: z.number().default(1),
       recurringPeriod: z.number().optional(),
       groupId: z.string().min(1, "groupId cannot be empty"),
-      userId: z.string().min(1, "userId cannot be empty"),
     }),
   )
   .mutation(async ({ ctx, input }) => {
     const group = await ctx.db.group.findUnique({
       where: { id: input.groupId },
     });
-    
+
     if (!group) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: "Group not found",
       });
     }
-    const admin = await isUserInGroup({
-      userId: input.userId,
+
+    const authorized = await isUserInGroup({
+      userId: ctx.auth?.user?.id ?? "",
       groupId: input.groupId,
       ctx,
     });
-    if (!admin) {
+
+    if (!authorized) {
       throw new TRPCError({
         code: "FORBIDDEN",
-        message: "User is not an admin",
+        message: "User not authorized to perform this action",
       });
     }
-    return ctx.db.bill.create({ data: input });
+
+    return ctx.db.bill.create({
+      data: { ...input, userId: ctx.auth?.user?.id ?? "" },
+    });
   });

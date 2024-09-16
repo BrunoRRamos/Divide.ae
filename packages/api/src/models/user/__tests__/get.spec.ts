@@ -1,8 +1,9 @@
 import { PrismockClient } from "prismock";
 import { afterEach, expect, it, vi } from "vitest";
 
-import { createCaller, createTRPCContext } from "../../..";
 import { db } from "@/db";
+
+import { createCaller, createContextInner } from "../../..";
 
 vi.mock("@/db", () => {
   return { db: new PrismockClient() };
@@ -15,11 +16,14 @@ afterEach(async () => {
 });
 
 it("should get a created user", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
-  const user = await caller.user.create.one({
-    name: "Caique",
-    email: "caique.email@gmail.com",
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
   });
   const getUser = await caller.user.get.one({ id: user.id });
   expect(getUser).toEqual(
@@ -32,24 +36,28 @@ it("should get a created user", async () => {
 });
 
 it("should not get an uncreated user", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
   const user = await caller.user.get.one({ id: "notCreatedId" });
   expect(user).toBeNull();
 });
 
 it("should get all users", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
-  console.log(await caller.user.get.all());
-  await caller.user.create.one({
-    name: "Caique",
-    email: "caique.email@gmail.com",
+  await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
   });
-
-  await caller.user.create.one({
-    name: "Jorge",
-    email: "jorgin@balalove.verygood",
+  await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Jorge",
+      email: "jorgin@balalove.verygood",
+    },
   });
 
   const users = await caller.user.get.all();

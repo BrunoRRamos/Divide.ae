@@ -1,26 +1,35 @@
 import { PrismockClient } from "prismock";
-import { expect, it, vi } from "vitest";
+import { afterEach, expect, it, vi } from "vitest";
 
-import { createCaller, createTRPCContext } from "../../..";
+import { db } from "@/db";
+
+import type { Context } from "../../..";
+import { createCaller } from "../../..";
 
 vi.mock("@/db", () => {
   return { db: new PrismockClient() };
 });
 
-it("should create a bill", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
-  const caller = createCaller(ctx);
+afterEach(async () => {
+  // @ts-expect-error db is a mock
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await db.reset();
+});
 
-  const user = await caller.user.create.one({
-    name: "Caique",
-    email: "caique@gmail.com",
+it("should create a bill", async () => {
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
   });
+
+  const caller = createCaller({ db, auth: { user } } as Context);
 
   const group = await caller.group.create.one({
     name: "Aniversario de Caique",
     description: "Comprar torta, salgados e refrigerante",
-    userId: user.id,
-    closedAt: null,
     fixedTax: 0,
   });
 
@@ -31,7 +40,6 @@ it("should create a bill", async () => {
     quantity: 1,
     recurringPeriod: 30,
     groupId: group.id,
-    userId: user.id,
   });
   expect(bill).toEqual(
     expect.objectContaining({
@@ -47,8 +55,16 @@ it("should create a bill", async () => {
 });
 
 it("should not create a bill with blank group id", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
-  const caller = createCaller(ctx);
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
+  });
+
+  const caller = createCaller({ db, auth: { user } } as Context);
+
   await expect(
     caller.bill.create.one({
       name: "teste",
@@ -57,14 +73,39 @@ it("should not create a bill with blank group id", async () => {
       quantity: 1,
       recurringPeriod: 30,
       groupId: "",
-      userId: "some",
     }),
   ).rejects.toThrow();
 });
 
-it("sould not create a bill if user does not belong to group", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
-  const caller = createCaller(ctx);
+it("should not create a bill if user does not belong to group", async () => {
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
+  });
+
+  const groupOwner = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Joao",
+      email: "joao@gmail.com",
+    },
+  });
+
+  const group = await db.group.create({
+    data: {
+      name: "Aniversario de Caique",
+      description: "Comprar torta, salgados e refrigerante",
+      fixedTax: 0,
+      userId: groupOwner.id,
+    },
+    include: { users: true },
+  });
+
+  const caller = createCaller({ db, auth: { user } } as Context);
+
   await expect(
     caller.bill.create.one({
       name: "teste",
@@ -72,8 +113,7 @@ it("sould not create a bill if user does not belong to group", async () => {
       value: 150.75,
       quantity: 1,
       recurringPeriod: 30,
-      groupId: "some-group-id",
-      userId: "some",
+      groupId: group.id,
     }),
   ).rejects.toThrow();
 });

@@ -4,8 +4,7 @@ import { afterAll, beforeAll, expect, it, vi } from "vitest";
 
 import { db } from "@/db";
 
-import { createCaller } from "../../..";
-import { createTRPCContext } from "../../../trpc";
+import { createCaller, createContextInner } from "../../..";
 
 vi.mock("@/db", () => {
   return { db: new PrismockClient() };
@@ -14,17 +13,20 @@ vi.mock("@/db", () => {
 let paymentId: string;
 
 beforeAll(async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
-  const user = await caller.user.create.one({
-    name: "Pedro",
-    email: "pedro@gmail.com",
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
   });
   const group = await caller.group.create.one({
     name: "Aniversario de Caique",
     description: "Comprar torta, salgados e refrigerante",
     userId: "kffjjek3345",
-    closedAt: null,
+    closedAt: undefined,
     fixedTax: 0,
     variableTax: 0,
   });
@@ -43,7 +45,7 @@ afterAll(() => {
 });
 
 it("should delete a payment", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   const deletePayment = await caller.payment.delete.one(paymentId);
@@ -57,7 +59,7 @@ it("should delete a payment", async () => {
 });
 
 it("should not delete a payment that does not exist", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   await expect(caller.payment.delete.one("kffjjek3345")).rejects.toThrowError();

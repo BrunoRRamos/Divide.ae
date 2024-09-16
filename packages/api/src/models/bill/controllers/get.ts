@@ -5,18 +5,8 @@ import { protectedProcedure } from "../../../trpc";
 import { isUserInGroup } from "./utils";
 
 export const getBillById = protectedProcedure
-  .input(z.object({ billId: z.string(), userId: z.string() }))
+  .input(z.object({ billId: z.string() }))
   .query(async ({ ctx, input }) => {
-    const user = await ctx.db.user.findUnique({
-      where: { id: input.userId },
-    });
-    if (!user) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "User not found",
-      });
-    }
-
     const bill = await ctx.db.bill.findFirst({
       where: { id: input.billId },
     });
@@ -31,7 +21,7 @@ export const getBillById = protectedProcedure
       !(await isUserInGroup({
         ctx,
         groupId: bill.groupId,
-        userId: user.id,
+        userId: ctx.auth?.user?.id ?? "",
       }))
     ) {
       throw new TRPCError({
@@ -39,6 +29,7 @@ export const getBillById = protectedProcedure
         message: "User is not the owner of the bill",
       });
     }
+
     return bill;
   });
 

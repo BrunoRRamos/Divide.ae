@@ -1,20 +1,30 @@
 import { z } from "zod";
 
-import { publicProcedure } from "../../../trpc";
+import { protectedProcedure } from "../../../trpc";
 
 const createGroupSchema = z.object({
   name: z.string(),
-  description: z.string(),
+  description: z.string().optional(),
   fixedTax: z.number().optional(),
   variableTax: z.number().optional(),
-  closedAt: z.union([z.date(), z.string()]).nullable(),
-  userId: z.string(),
-  createdAt: z.date().default(() => new Date()),
-  updatedAt: z.union([z.date(), z.string()]).optional(),
+  closedAt: z.date().optional(),
+  users: z.array(z.string()).optional(),
 });
 
-export const createOneGroupProcedure = publicProcedure
+export const createOneGroupProcedure = protectedProcedure
   .input(createGroupSchema)
-  .mutation(({ ctx, input }) => {
-    return ctx.db.group.create({ data: input });
+  .mutation(async ({ ctx, input }) => {
+    const { users, ...data } = input;
+
+    const group = await ctx.db.group.create({
+      data: { ...data, userId: ctx.auth?.user?.id ?? "" },
+    });
+
+    const updatedGroup = await ctx.db.group.update({
+      where: { id: group.id },
+      data: { users: { connect: users?.map((userId) => ({ id: userId })) } },
+      include: { users: true },
+    });
+
+    return updatedGroup;
   });

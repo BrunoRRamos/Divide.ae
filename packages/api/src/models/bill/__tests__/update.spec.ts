@@ -1,26 +1,35 @@
 import { PrismockClient } from "prismock";
-import { expect, it, vi } from "vitest";
+import { afterEach, expect, it, vi } from "vitest";
 
-import { createCaller, createTRPCContext } from "../../..";
+import { db } from "@/db";
+
+import type { Context } from "../../..";
+import { createCaller } from "../../..";
 
 vi.mock("@/db", () => {
   return { db: new PrismockClient() };
 });
 
-it("should update a bill", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
-  const caller = createCaller(ctx);
+afterEach(async () => {
+  // @ts-expect-error db is a mock
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await db.reset();
+});
 
-  const user = await caller.user.create.one({
-    name: "Caique",
-    email: "caique@gmail.com",
+it("should update a bill", async () => {
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
   });
+
+  const caller = createCaller({ db, auth: { user } } as Context);
 
   const group = await caller.group.create.one({
     name: "Aniversario de Caique",
     description: "Comprar torta, salgados e refrigerante",
-    userId: user.id,
-    closedAt: null,
     fixedTax: 0,
   });
 
@@ -31,8 +40,8 @@ it("should update a bill", async () => {
     quantity: 1,
     recurringPeriod: 30,
     groupId: group.id,
-    userId: user.id,
   });
+
   const updatedBill = await caller.bill.update.one({
     id: bill.id,
     name: "Yearly Subscription",
@@ -54,19 +63,19 @@ it("should update a bill", async () => {
 });
 
 it("should not update a bill that does not belong to the user", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
-  const caller = createCaller(ctx);
-
-  const user = await caller.user.create.one({
-    name: "Caique",
-    email: "caique@gmail.com",
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
   });
+
+  const caller = createCaller({ db, auth: { user } } as Context);
 
   const group = await caller.group.create.one({
     name: "Aniversario de Caique",
     description: "Comprar torta, salgados e refrigerante",
-    userId: user.id,
-    closedAt: null,
     fixedTax: 0,
   });
 
@@ -77,19 +86,19 @@ it("should not update a bill that does not belong to the user", async () => {
     quantity: 1,
     recurringPeriod: 30,
     groupId: group.id,
-    userId: user.id,
   });
 
-  const user2 = await caller.user.create.one({
-    name: "User 2",
-    email: "user@gmail.com",
+  const user2 = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "User 2",
+      email: "user@gmail.com",
+    },
   });
 
   const group2 = await caller.group.create.one({
     name: "Group 2",
     description: "Group 2",
-    userId: user2.id,
-    closedAt: null,
     fixedTax: 0,
   });
 
@@ -101,7 +110,6 @@ it("should not update a bill that does not belong to the user", async () => {
     quantity: 1,
     recurringPeriod: 30,
     groupId: group2.id,
-    userId: user2.id,
   });
 
   await expect(() =>
