@@ -44,3 +44,8 @@
    ```bash
    pnpm test-coverage
    ```
+
+4. **Executar os teste via interface grafica:**
+   ```bash
+   pnpm test-ui
+   ```
