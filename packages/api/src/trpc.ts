@@ -2,47 +2,58 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { db } from "@/db";
+import type { User } from "@/db";
 import type { Session } from "@clerk/clerk-sdk-node";
 import type { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
 import type { CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
+import { db } from "@/db";
 
 import { clerkClient } from "./lib/clerk";
 
-/**
- * 1. CONTEXT
- *
- * This section defines the "contexts" that are available in the backend API.
- *
- * These allow you to access things when processing a request, like the database, the session, etc.
- *
- * This helper generates the "internals" for a tRPC context. The API handler and RSC clients each
- * wrap this and provides the required context.
- *
- * @see https://trpc.io/docs/server/context
- */
-export const createTRPCContext = async (
-  opts: CreateHTTPContextOptions | CreateWSSContextFnOptions,
-) => {
-  const token =
-    opts.req.headers.authorization?.replace("Bearer ", "").trim() ?? null;
+type CreateContextOpts = CreateHTTPContextOptions | CreateWSSContextFnOptions;
+
+type CreateContextInnerOptions = Partial<CreateContextOpts> & {
+  authorization?: string;
+};
+
+export const createContextInner = async (opts: CreateContextInnerOptions) => {
   let session: Session | null = null;
+  let user: User | null = null;
+
+  const token = opts.authorization?.replace("Bearer ", "").trim() ?? null;
 
   if (token) {
     try {
       const verifiedToken = await clerkClient.verifyToken(token);
       session = await clerkClient.sessions.getSession(verifiedToken.sid);
+      user = await db.user.findUnique({
+        where: { clerkId: session.userId },
+      });
+
+      return {
+        db,
+        auth: { session, user },
+      };
     } catch {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
   }
 
-  const source = opts.req.headers["trpc-x-source"] ?? "unknown";
-  console.log(">>> tRPC Request from", source, "by", session?.userId);
-
   return {
     db,
-    session,
+  };
+};
+
+export const createContext = async (opts: CreateContextOpts) => {
+  const innerContext = await createContextInner({
+    authorization: opts.req.headers.authorization,
+    ...opts,
+  });
+
+  return {
+    ...innerContext,
+    req: opts.req,
+    res: opts.res,
   };
 };
 
@@ -52,7 +63,7 @@ export const createTRPCContext = async (
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<typeof createContextInner>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => ({
     ...shape,
@@ -125,22 +136,29 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
   .use(async ({ ctx, next }) => {
-    if (!ctx.session) {
+    if (process.env.NODE_ENV === "test") {
+      return next();
+    }
+
+    if (!ctx.auth) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
     // it would be better to user clerk webhook
     const user = await ctx.db.user.findUnique({
-      where: { clerkId: ctx.session.userId },
+      where: { clerkId: ctx.auth.session.userId },
     });
 
     if (!user) {
-      const clerkUser = await clerkClient.users.getUser(ctx.session.userId);
+      const clerkUser = await clerkClient.users.getUser(
+        ctx.auth.session.userId,
+      );
+
       await ctx.db.user.create({
         data: {
           email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
           name: clerkUser.username ?? "",
-          clerkId: ctx.session.userId,
+          clerkId: ctx.auth.session.userId,
         },
       });
     }

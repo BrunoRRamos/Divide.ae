@@ -1,8 +1,9 @@
 import { PrismockClient } from "prismock";
 import { beforeAll, expect, it, vi } from "vitest";
 
-import { createCaller } from "../../..";
-import { createTRPCContext } from "../../../trpc";
+import { db } from "@/db";
+
+import { createCaller, createContextInner } from "../../..";
 
 vi.mock("@/db", () => {
   return { db: new PrismockClient() };
@@ -13,11 +14,15 @@ let userId: string;
 let groupId: string;
 
 beforeAll(async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
-  const user = await caller.user.create.one({
-    name: "Pedro",
-    email: "pedro@gmail.com",
+
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
   });
 
   userId = user.id;
@@ -25,7 +30,7 @@ beforeAll(async () => {
     name: "Aniversario de Caique",
     description: "Comprar torta, salgados e refrigerante",
     userId: "kffjjek3345",
-    closedAt: null,
+    closedAt: undefined,
     fixedTax: 0,
     variableTax: 0,
   });
@@ -46,7 +51,7 @@ beforeAll(async () => {
 });
 
 it("should get a payment", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   const getPayment = await caller.payment.get.one(paymentId);
@@ -59,7 +64,7 @@ it("should get a payment", async () => {
 });
 
 it("should not get a payment that does not exist", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   const getPayment = await caller.payment.get.one("kffjjek3345");
@@ -68,7 +73,7 @@ it("should not get a payment that does not exist", async () => {
 });
 
 it("should get all payments from a group", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   const getPayments = await caller.payment.get.many.group(groupId);
@@ -86,7 +91,7 @@ it("should get all payments from a group", async () => {
 });
 
 it("should get all payments from a user", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   const getPayments = await caller.payment.get.many.user(userId);

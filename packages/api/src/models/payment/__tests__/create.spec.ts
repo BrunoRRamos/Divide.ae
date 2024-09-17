@@ -4,8 +4,7 @@ import { afterAll, beforeAll, expect, it, vi } from "vitest";
 
 import { db } from "@/db";
 
-import { createCaller } from "../../..";
-import { createTRPCContext } from "../../../trpc";
+import { createCaller, createContextInner } from "../../..";
 
 vi.mock("@/db", () => {
   return { db: new PrismockClient() };
@@ -15,18 +14,22 @@ let userId: string;
 let groupId: string;
 
 beforeAll(async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
-  const user = await caller.user.create.one({
-    name: "Pedro",
-    email: "pedro@gmail.com",
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
   });
+
   userId = user.id;
   const group = await caller.group.create.one({
     name: "Aniversario de Caique",
     description: "Comprar torta, salgados e refrigerante",
     userId: "kffjjek3345",
-    closedAt: null,
+    closedAt: undefined,
     fixedTax: 0,
     variableTax: 0,
   });
@@ -38,7 +41,7 @@ afterAll(() => {
 });
 
 it("should create a payment", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   const createPayment = await caller.payment.create.one({
@@ -57,7 +60,7 @@ it("should create a payment", async () => {
 });
 
 it("should not create a payment with negative value", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   await expect(
@@ -70,7 +73,7 @@ it("should not create a payment with negative value", async () => {
 });
 
 it("should not create a payment with empty userId", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   await expect(
@@ -83,7 +86,7 @@ it("should not create a payment with empty userId", async () => {
 });
 
 it("should not create a payment with empty groupId", async () => {
-  const ctx = createTRPCContext({ headers: new Headers() });
+  const ctx = await createContextInner({});
   const caller = createCaller(ctx);
 
   await expect(
