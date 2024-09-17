@@ -12,12 +12,14 @@
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "dotenv -e ../../.env --",
+    "test-coverage": "pnpm vitest --coverage"
   },
   "dependencies": {
     "@/db": "workspace:*",
     "@clerk/clerk-sdk-node": "^5.0.38",
     "@trpc/server": "catalog:",
+    "@vitest/coverage-v8": "2.0.5",
     "dotenv-cli": "^7.4.2",
     "ioredis": "^5.4.1",
     "prismock": "^1.33.1",

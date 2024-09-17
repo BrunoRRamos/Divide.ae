@@ -14,6 +14,7 @@
    ```
 
 3. **Set up your env variables according to the .env.example file**
+<br>
 
 4. **Execute Prisma migrations**
    ```bash
@@ -24,4 +25,22 @@
 5. **Run 🚀**
    ```bash
    pnpm dev
+   ```
+
+--------
+
+## Para executar os testes
+
+1. **Realizar todos os passos de RUN**
+<br>
+
+2. **Ir para o diretorio da API:**
+   ```bash
+   cd .\packages\api\
+   ```
+<br>
+
+3. **Executar o comando:**
+   ```bash
+   pnpm test-coverage
    ```
