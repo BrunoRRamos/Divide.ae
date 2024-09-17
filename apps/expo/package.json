@@ -53,6 +53,7 @@
     "nativewind": "catalog:",
     "react": "catalog:react18",
     "react-native": "^0.74.5",
+    "react-native-crypto-js": "^1.0.0",
     "react-native-currency-input": "^1.1.1",
     "react-native-gesture-handler": "^2.19.0",
     "react-native-mask-input": "^1.2.3",
@@ -62,6 +63,7 @@
     "react-native-screens": "^3.31.1",
     "react-native-svg": "^15.2.0",
     "react-native-toast-message": "^2.2.0",
+    "stream": "^0.0.3",
     "superjson": "2.2.1",
     "tailwind-merge": "^2.5.2",
     "yup": "^1.4.0"

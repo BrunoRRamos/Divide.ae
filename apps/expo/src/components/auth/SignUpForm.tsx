@@ -55,6 +55,8 @@ export function SignUpForm() {
       });
       setPendingVerification(true);
     } catch (e) {
+      console.log(e.toString());
+
       if (isClerkAPIResponseError(e)) {
         switch (e.errors[0]?.code) {
           case "form_identifier_exists":
