@@ -2,14 +2,14 @@ import React from "react";
 import { View } from "react-native";
 import { Link } from "expo-router";
 
-import { SignInForm } from "~/components/auth/signInForm";
+import { SignInForm } from "~/components/auth/SignInForm";
 import { Logo } from "~/components/layout/Logo";
 import { ScreenView } from "~/components/layout/ScreenView";
 import { Text } from "~/components/ui";
 
 export default function SignInPage() {
   return (
-    <ScreenView className="flex h-full justify-center gap-10" avoidKeyboard>
+    <ScreenView className="justify-center gap-10" avoidKeyboard>
       <Logo />
       <SignInForm />
       <View className="flex flex-col items-center gap-2">

@@ -8,7 +8,7 @@ import { cn } from "~/lib/utils";
 import { Loading } from "../layout/Loading";
 
 const buttonVariants = cva(
-  "group flex items-center justify-center rounded-md",
+  "group flex items-center justify-center rounded-2xl",
   {
     variants: {
       variant: {
@@ -20,7 +20,7 @@ const buttonVariants = cva(
         link: "",
       },
       size: {
-        default: "h-12 px-5 py-3",
+        default: "h-14 px-5 py-3",
         sm: "h-9 rounded-md px-3",
         lg: "h-14 rounded-md px-8",
         icon: "h-10 w-10",

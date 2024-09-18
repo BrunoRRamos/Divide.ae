@@ -30,12 +30,24 @@ export const createContextInner = async (opts: CreateContextInnerOptions) => {
         where: { clerkId: session.userId },
       });
 
+      if (!user) {
+        const clerkUser = await clerkClient.users.getUser(session.userId);
+
+        user = await db.user.create({
+          data: {
+            email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
+            name: clerkUser.username ?? "",
+            clerkId: session.userId,
+          },
+        });
+      }
+
       return {
         db,
         auth: { session, user },
       };
     } catch {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
+      return { db };
     }
   }
 
@@ -142,25 +154,6 @@ export const protectedProcedure = t.procedure
 
     if (!ctx.auth) {
       throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-
-    // it would be better to user clerk webhook
-    const user = await ctx.db.user.findUnique({
-      where: { clerkId: ctx.auth.session.userId },
-    });
-
-    if (!user) {
-      const clerkUser = await clerkClient.users.getUser(
-        ctx.auth.session.userId,
-      );
-
-      await ctx.db.user.create({
-        data: {
-          email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
-          name: clerkUser.username ?? "",
-          clerkId: ctx.auth.session.userId,
-        },
-      });
     }
 
     return next();

@@ -7,7 +7,7 @@ import * as yup from "yup";
 import type { HandleSubmit } from "../form/types";
 import { Button, Text } from "~/components/ui";
 import { TextField } from "../form/TextField";
-import { SignUpVerify } from "./signUpVerify";
+import { SignUpVerify } from "./SignUpVerify";
 
 export function SignUpForm() {
   const clerk = useSignUp();
@@ -58,10 +58,11 @@ export function SignUpForm() {
       if (isClerkAPIResponseError(e)) {
         switch (e.errors[0]?.code) {
           case "form_identifier_exists":
-            helpers.setErrors({ email: "Email already taken" });
-            break;
-          case "form_username_already_taken":
-            helpers.setErrors({ username: "Username already taken" });
+            helpers.setErrors(
+              e.errors[0]?.message.includes("user")
+                ? { username: "Username already taken" }
+                : { email: "Email already taken" },
+            );
             break;
         }
       }

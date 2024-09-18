@@ -21,7 +21,12 @@ export { type RouterInputs, type RouterOutputs } from "@/api";
  * Use only in _app.tsx
  */
 export function TRPCProvider(props: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: { queries: { refetchOnMount: true } },
+      }),
+  );
   const [trpcClient] = useState(() =>
     api.createClient({
       links: [

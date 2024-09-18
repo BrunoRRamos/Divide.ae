@@ -33,6 +33,8 @@ export function SignUpVerify() {
 
       if (attemptResult.status === "complete") {
         await clerk.setActive({ session: attemptResult.createdSessionId });
+
+        router.dismissAll();
         router.replace("/");
       }
     } catch (e) {

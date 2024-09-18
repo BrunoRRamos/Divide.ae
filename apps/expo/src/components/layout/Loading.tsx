@@ -13,7 +13,11 @@ export function Loading({
   const Wrapper = screen ? View : Fragment;
 
   return (
-    <Wrapper className="flex size-full items-center justify-center">
+    <Wrapper
+      {...(screen
+        ? { className: "flex size-full items-center justify-center" }
+        : {})}
+    >
       <View className={cn("animate-spin", className)} {...props}>
         <Loader2 color="black" />
       </View>
