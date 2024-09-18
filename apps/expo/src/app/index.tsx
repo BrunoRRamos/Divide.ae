@@ -1,8 +1,9 @@
+import { useAuth } from "@clerk/clerk-expo";
+import { Redirect } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Redirect } from "expo-router";
-import { useAuth } from "@clerk/clerk-expo";
+import { EditProfileForm } from "~/components/auth/editUser";
 
 import { ScreenView } from "~/components/layout/ScreenView";
 import { Button, Text } from "~/components/ui";
@@ -39,6 +40,7 @@ export default function Home() {
       >
         <Text>Sign out</Text>
       </Button>
+      <EditProfileForm/>
     </ScreenView>
   );
 }
