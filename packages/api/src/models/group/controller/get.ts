@@ -1,25 +1,35 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { publicProcedure } from "../../../trpc";
+import { protectedProcedure } from "../../../trpc";
 
-export const getOneGroupProcedure = publicProcedure
+export const getOneGroupProcedure = protectedProcedure
   .input(z.object({ id: z.string() }))
   .query(({ ctx, input }) => {
     return ctx.db.group.findUnique({
-      where: { id: input.id },
+      where: {
+        id: input.id,
+        OR: [
+          { users: { some: { id: ctx.auth?.user.id } } },
+          { userId: ctx.auth?.user.id },
+        ],
+      },
+      include: {
+        users: true,
+      },
     });
   });
 
-export const getAllGroupsProcedure = publicProcedure.query(async ({ ctx }) => {
-  const groupSet = await ctx.db.group.findMany();
-
-  if (!groupSet.length) {
-    throw new TRPCError({
-      code: "NOT_FOUND",
-      message: "Group not found",
+export const getAllGroupsProcedure = protectedProcedure.query(
+  async ({ ctx }) => {
+    const groups = await ctx.db.group.findMany({
+      where: {
+        OR: [
+          { users: { some: { id: ctx.auth?.user.id } } },
+          { userId: ctx.auth?.user.id },
+        ],
+      },
     });
-  }
 
-  return groupSet;
-});
+    return groups;
+  },
+);

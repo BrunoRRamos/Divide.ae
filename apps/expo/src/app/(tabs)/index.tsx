@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Redirect } from "expo-router";
 import { useAuth } from "@clerk/clerk-expo";
 
+import { GroupList } from "~/components/group/groupList";
 import { ScreenView } from "~/components/layout/ScreenView";
 import { Button, Text } from "~/components/ui";
 
@@ -27,7 +28,6 @@ export default function Home() {
 
   return (
     <ScreenView>
-      <Text>Home</Text>
       <Button
         variant="destructive"
         onPress={async () => {
@@ -39,6 +39,7 @@ export default function Home() {
       >
         <Text>Sign out</Text>
       </Button>
+      <GroupList />
     </ScreenView>
   );
 }

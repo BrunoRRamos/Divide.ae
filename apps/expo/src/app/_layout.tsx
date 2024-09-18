@@ -64,10 +64,12 @@ export default function RootLayout() {
             <SafeAreaProvider>
               <Suspense fallback={<Loading screen />}>
                 <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-                <Stack
-                  screenOptions={{ headerShown: false }}
-                  initialRouteName="home"
-                />
+                <Stack>
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                </Stack>
                 <Toast />
               </Suspense>
             </SafeAreaProvider>

@@ -2,7 +2,6 @@
   "name": "@/expo",
   "version": "0.1.0",
   "private": true,
-  "main": "expo-router/entry",
   "scripts": {
     "clean": "git clean -xdf .cache .expo .turbo android ios node_modules",
     "dev": "expo start",
@@ -21,6 +20,7 @@
     "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
+    "@rn-primitives/avatar": "^1.0.5",
     "@rn-primitives/label": "^1.0.3",
     "@rn-primitives/slot": "^1.0.3",
     "@rn-primitives/types": "^1.0.3",

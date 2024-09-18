@@ -1,9 +1,7 @@
 import type { ComponentProps } from "react";
-import { Fragment } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
-  Platform,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -18,30 +16,25 @@ type ScreenViewProps = ComponentProps<typeof View> & {
 export function ScreenView({
   className,
   children,
-  avoidKeyboard,
+  avoidKeyboard = true,
   ...props
 }: ScreenViewProps) {
-  const Component = avoidKeyboard ? KeyboardAvoidingView : Fragment;
-  const componentProps = avoidKeyboard
-    ? {
-        behavior:
-          Platform.OS === "ios" ? ("padding" as const) : ("height" as const),
-        accessible: false,
-      }
-    : {};
-
   return (
     <SafeAreaView>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <Component {...componentProps}>
+      <KeyboardAvoidingView
+        enabled={avoidKeyboard}
+        behavior="position"
+        accessible={false}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View
-            className={cn("flex h-full gap-6 bg-white px-4", className)}
+            className={cn("flex h-full gap-6 bg-white px-6", className)}
             {...props}
           >
             {children}
           </View>
-        </Component>
-      </TouchableWithoutFeedback>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

@@ -17,7 +17,7 @@ const wss = new ws.Server({
   port,
 });
 
-const handler = applyWSSHandler({
+applyWSSHandler({
   wss,
   router: appRouter,
   createContext: createContext,
@@ -41,9 +41,3 @@ wss.on("connection", (ws) => {
 console.log(
   `🚀 Websocket server listening on port ${process.env.PORT ?? 3000}`,
 );
-
-process.on("SIGTERM", () => {
-  console.log("SIGTERM");
-  handler.broadcastReconnectNotification();
-  wss.close();
-});
