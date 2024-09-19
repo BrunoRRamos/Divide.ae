@@ -37,14 +37,16 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
           colorMode: "ansi",
         }),
         splitLink({
-          condition: (opts) => opts.type === "subscription",
+          condition: (opts) => {
+            return opts.type === "subscription";
+          },
           true: wsLink({
             client: wsClient,
             transformer: superjson,
           }),
           false: httpBatchLink({
             transformer: superjson,
-            url: getBaseUrl(),
+            url: getBaseUrl("http", "3001"),
             async headers() {
               const headers = new Map<string, string>();
               const token = await getClerkInstance().session?.getToken();
