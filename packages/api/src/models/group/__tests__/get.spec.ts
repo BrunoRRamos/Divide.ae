@@ -21,7 +21,6 @@ it("Should get a group by id", async () => {
   const baseGroup = await caller.group.create.one({
     name: "Contas do mes",
     description: "Organizar as contas do mes",
-    userId: "ewfewwv335dcv",
     fixedTax: 0,
     variableTax: 0,
   });
@@ -47,7 +46,6 @@ it("Should get all groups", async () => {
   await caller.group.create.one({
     name: "Contas do mes",
     description: "Organizar as contas do mes",
-    userId: "ewfewwv335dcv",
     fixedTax: 0,
     variableTax: 0,
   });
