@@ -10,10 +10,10 @@ interface GroupHeaderProps {
 
 export function GroupHeader({ group }: GroupHeaderProps) {
   return (
-    <View className="flex flex-row justify-between">
-      <Text className="text-3xl font-medium">{group.name}</Text>
+    <View className="flex flex-row items-center justify-between">
+      <Text className="text-2xl">{group.name}</Text>
       <TouchableOpacity>
-        <Settings size={28} color="black" />
+        <Settings size={24} color="black" />
       </TouchableOpacity>
     </View>
   );

@@ -11,9 +11,14 @@ interface GroupMembersProps {
 
 export function GroupMembers({ group }: GroupMembersProps) {
   return (
-    <View>
-      {group.users.map((user) => (
-        <UserAvatar key={user.id} name={user.name} />
+    <View className="flex flex-row">
+      {group.users.slice(0, 3).map((user, i) => (
+        <View
+          style={{ left: i * -20 }}
+          className="rounded-full border-2 border-white"
+        >
+          <UserAvatar key={user.id} name={user.name} />
+        </View>
       ))}
       <Link
         href={{ pathname: "/group/[id]/code", params: { id: group.id } }}

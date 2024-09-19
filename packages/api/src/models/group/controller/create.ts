@@ -21,9 +21,10 @@ export const createOneGroupProcedure = protectedProcedure
     const group = await ctx.db.group.create({
       data: {
         ...data,
+        code,
         userId: ctx.auth?.user.id ?? "",
         users: { connect: { id: ctx.auth?.user.id } },
-     , code },
+      },
     });
 
     const updatedGroup = await ctx.db.group.update({

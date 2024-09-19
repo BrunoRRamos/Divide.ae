@@ -1,3 +1,5 @@
+import { Text } from "react-native";
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface UserAvatarProps {
@@ -9,7 +11,11 @@ export function UserAvatar({ name, avatar }: UserAvatarProps) {
   return (
     <Avatar alt={name}>
       <AvatarImage source={{ uri: avatar }} />
-      <AvatarFallback>{name.charAt(0)}</AvatarFallback>
+      <AvatarFallback>
+        <Text className="text-2xl uppercase text-gray-800">
+          {name.charAt(0)}
+        </Text>
+      </AvatarFallback>
     </Avatar>
   );
 }

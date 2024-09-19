@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { getClerkInstance } from "@clerk/clerk-expo";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink, splitLink, wsLink } from "@trpc/client";
@@ -52,18 +51,22 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
               const token = await getClerkInstance().session?.getToken();
               headers.set("x-trpc-source", "expo-react");
 
-              if (token) {
-                headers.set("Authorization", `Bearer ${token}`);
-              }
+          if (token) {
+            headers.set("Authorization", `Bearer ${token}`);
+          }
 
-              return Object.fromEntries(headers);
-            },
-          }),
-        }),
-      ],
+          return Object.fromEntries(headers);
+        },
+      }),
     }),
-  );
+  ],
+});
 
+/**
+ * A wrapper for your app that provides the TRPC context.
+ * Use only in _app.tsx
+ */
+export function TRPCProvider(props: { children: React.ReactNode }) {
   return (
     <api.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
