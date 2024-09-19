@@ -30,7 +30,6 @@
     "@trpc/client": "catalog:",
     "@trpc/react-query": "catalog:",
     "@trpc/server": "catalog:",
-    "@twotalltotems/react-native-otp-input": "^1.3.11",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "expo": "^51.0.32",
