@@ -19,7 +19,12 @@ export const createOneGroupProcedure = protectedProcedure
     const code = Math.floor(100000 + Math.random() * 900000) + "";
 
     const group = await ctx.db.group.create({
-      data: { ...data, userId: ctx.auth?.user.id ?? "", code },
+      data: {
+        ...data,
+        code,
+        userId: ctx.auth?.user.id ?? "",
+        users: { connect: { id: ctx.auth?.user.id } },
+      },
     });
 
     const updatedGroup = await ctx.db.group.update({
