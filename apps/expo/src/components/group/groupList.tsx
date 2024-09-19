@@ -1,4 +1,6 @@
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { Link } from "expo-router";
+import { Plus } from "lucide-react-native";
 
 import { api } from "~/utils/api";
 import { GroupListItem } from "./groupListItem";
@@ -8,7 +10,14 @@ export function GroupList() {
 
   return (
     <View className="flex flex-col gap-2">
-      <Text className="text-lg font-semibold">My groups</Text>
+      <View className="flex w-full flex-row justify-between">
+        <Text className="text-lg font-semibold">My groups</Text>
+        <Link href={{ pathname: "/group/code" }} asChild>
+          <TouchableOpacity>
+            <Plus size={24} color="black" />
+          </TouchableOpacity>
+        </Link>
+      </View>
       <FlatList
         data={groupListQuery.data}
         renderItem={({ item }) => <GroupListItem key={item.id} group={item} />}

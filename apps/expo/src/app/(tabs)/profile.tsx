@@ -1,5 +1,54 @@
-import { View } from "react-native";
+import { useState } from "react";
+import { useAuth } from "@clerk/clerk-expo";
+
+import { ScreenView } from "~/components/layout/ScreenView";
+import { Button, Text } from "~/components/ui";
+import { api } from "~/utils/api";
 
 export default function Profile() {
-  return <View></View>;
+  const [loading, setLoading] = useState(false);
+  const clerk = useAuth();
+
+  api.group.get.value.useSubscription(void 0, {
+    onData: (data) => {
+      console.log(data);
+    },
+    onStarted: () => {
+      console.log("started");
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const { mutateAsync: mutate } = api.group.update.one.useMutation();
+
+  return (
+    <ScreenView className="p-10">
+      <Button
+        variant="destructive"
+        onPress={async () => {
+          setLoading(true);
+          await clerk.signOut();
+          setLoading(false);
+        }}
+        loading={loading}
+      >
+        <Text>Sign out</Text>
+      </Button>
+      <Button
+        onPress={async () => {
+          setLoading(true);
+          await mutate({
+            id: "cm18gy5m200018xn3mt0060tw",
+            name: "Contas do mes",
+          });
+          setLoading(false);
+        }}
+        loading={loading}
+      >
+        <Text>Test</Text>
+      </Button>
+    </ScreenView>
+  );
 }

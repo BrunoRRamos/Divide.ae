@@ -16,12 +16,14 @@ export const createOneGroupProcedure = protectedProcedure
   .mutation(async ({ ctx, input }) => {
     const { users, ...data } = input;
 
+    const code = Math.floor(100000 + Math.random() * 900000) + "";
+
     const group = await ctx.db.group.create({
       data: {
         ...data,
         userId: ctx.auth?.user.id ?? "",
         users: { connect: { id: ctx.auth?.user.id } },
-      },
+     , code },
     });
 
     const updatedGroup = await ctx.db.group.update({
