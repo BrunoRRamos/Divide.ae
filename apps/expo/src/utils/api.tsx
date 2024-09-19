@@ -6,6 +6,7 @@ import superjson from "superjson";
 
 import type { AppRouter } from "@/api";
 
+import { useState } from "react";
 import { getBaseUrl } from "./base-url";
 import { wsClient } from "./websocket";
 
@@ -60,13 +61,8 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
       }),
     }),
   ],
-});
+}));
 
-/**
- * A wrapper for your app that provides the TRPC context.
- * Use only in _app.tsx
- */
-export function TRPCProvider(props: { children: React.ReactNode }) {
   return (
     <api.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
