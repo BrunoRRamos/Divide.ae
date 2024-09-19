@@ -39,6 +39,7 @@ model Group {
   fixedTax    Float?    @default(0)
   variableTax Float?    @default(0)
   closedAt    DateTime?
+  code        String    @unique
 
   users    User[]    @relation("UserGroups")
   bills    Bill[]

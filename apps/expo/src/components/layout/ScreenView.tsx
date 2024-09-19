@@ -19,8 +19,11 @@ export function ScreenView({
   avoidKeyboard = true,
   ...props
 }: ScreenViewProps) {
+  // const Component = Platform.OS === "ios" ? View : SafeAreaView;
+  const Component = SafeAreaView;
+
   return (
-    <SafeAreaView>
+    <Component>
       <KeyboardAvoidingView
         enabled={avoidKeyboard}
         behavior="position"
@@ -28,13 +31,13 @@ export function ScreenView({
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View
-            className={cn("flex h-full gap-6 bg-white px-6", className)}
+            className={cn("flex h-screen gap-6 bg-white p-6", className)}
             {...props}
           >
             {children}
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </Component>
   );
 }

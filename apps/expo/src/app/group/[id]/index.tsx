@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 
 import type { RouterOutputs } from "~/utils/api";
@@ -19,14 +18,13 @@ const GroupPage = () => {
   });
 
   if (!group) {
-    return null;
+    return <ScreenView className="text-center">Group not found</ScreenView>;
   }
 
   return (
     <ScreenView>
       <GroupHeader group={group} />
       <GroupMembers group={group} />
-      <Text>{JSON.stringify(group, null, 2)}</Text>
     </ScreenView>
   );
 };

@@ -64,7 +64,7 @@ export default function RootLayout() {
             <SafeAreaProvider>
               <Suspense fallback={<Loading screen />}>
                 <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-                <Stack>
+                <Stack screenOptions={{ headerShown: false }}>
                   <Stack.Screen
                     name="(tabs)"
                     options={{ headerShown: false }}
