@@ -1,13 +1,13 @@
 import "../styles.css";
 
-import { Suspense, useEffect, useState } from "react";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
-import { SplashScreen, Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemeProvider } from "@react-navigation/native";
+import { SplashScreen, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { Suspense, useEffect, useState } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 import { Loading } from "~/components/layout/Loading";
 import { useColorScheme } from "~/hooks/useColorScheme";

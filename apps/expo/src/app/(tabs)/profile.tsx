@@ -1,6 +1,7 @@
-import { useState } from "react";
 import { useAuth } from "@clerk/clerk-expo";
+import { useState } from "react";
 
+import { EditProfileForm } from "~/components/auth/editUser";
 import { ScreenView } from "~/components/layout/ScreenView";
 import { Button, Text } from "~/components/ui";
 
@@ -10,6 +11,7 @@ export default function Profile() {
 
   return (
     <ScreenView className="p-10">
+      <EditProfileForm/>
       <Button
         variant="destructive"
         onPress={async () => {
@@ -21,6 +23,7 @@ export default function Profile() {
       >
         <Text>Sign out</Text>
       </Button>
+      
     </ScreenView>
   );
 }
