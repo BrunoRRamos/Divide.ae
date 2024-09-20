@@ -14,8 +14,6 @@ function GroupCode() {
   const { mutateAsync: mutate } = api.group.update.addUser.useMutation();
 
   const onCodeFilled = async (code: string) => {
-    console.log(code);
-
     if (code.length < 6) {
       return;
     }

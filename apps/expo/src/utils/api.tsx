@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { getClerkInstance } from "@clerk/clerk-expo";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink, splitLink, wsLink } from "@trpc/client";
@@ -7,6 +6,7 @@ import superjson from "superjson";
 
 import type { AppRouter } from "@/api";
 
+import { useState } from "react";
 import { getBaseUrl } from "./base-url";
 import { wsClient } from "./websocket";
 
@@ -37,30 +37,31 @@ export function TRPCProvider(props: { children: React.ReactNode }) {
           colorMode: "ansi",
         }),
         splitLink({
-          condition: (opts) => opts.type === "subscription",
+          condition: (opts) => {
+            return opts.type === "subscription";
+          },
           true: wsLink({
             client: wsClient,
             transformer: superjson,
           }),
           false: httpBatchLink({
             transformer: superjson,
-            url: getBaseUrl(),
+            url: getBaseUrl("http", "3001"),
             async headers() {
               const headers = new Map<string, string>();
               const token = await getClerkInstance().session?.getToken();
               headers.set("x-trpc-source", "expo-react");
 
-              if (token) {
-                headers.set("Authorization", `Bearer ${token}`);
-              }
+          if (token) {
+            headers.set("Authorization", `Bearer ${token}`);
+          }
 
-              return Object.fromEntries(headers);
-            },
-          }),
-        }),
-      ],
+          return Object.fromEntries(headers);
+        },
+      }),
     }),
-  );
+  ],
+}));
 
   return (
     <api.Provider client={trpcClient} queryClient={queryClient}>

@@ -25,7 +25,9 @@ export const createContextInner = async (opts: CreateContextInnerOptions) => {
   if (token) {
     try {
       const verifiedToken = await clerkClient.verifyToken(token);
+
       session = await clerkClient.sessions.getSession(verifiedToken.sid);
+
       user = await db.user.findUnique({
         where: { clerkId: session.userId },
       });
@@ -58,7 +60,9 @@ export const createContextInner = async (opts: CreateContextInnerOptions) => {
 
 export const createContext = async (opts: CreateContextOpts) => {
   const innerContext = await createContextInner({
-    authorization: opts.req.headers.authorization,
+    authorization:
+      opts.req.headers.authorization ??
+      opts.info.connectionParams?.Authorization,
     ...opts,
   });
 

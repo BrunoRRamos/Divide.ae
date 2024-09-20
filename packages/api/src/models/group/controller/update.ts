@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { publisherRedis } from "../../../lib/redis";
 import { protectedProcedure } from "../../../trpc";
 
 const updateGroupSchema = z.object({
@@ -15,9 +16,16 @@ const updateGroupSchema = z.object({
 
 export const updateOneGroupProcedure = protectedProcedure
   .input(updateGroupSchema)
-  .mutation(({ ctx, input }) => {
+  .mutation(async ({ ctx, input }) => {
     const { id, ...data } = input;
-    return ctx.db.group.update({ where: { id: id }, data });
+    const updated = await ctx.db.group.update({ where: { id: id }, data });
+
+    const a = await publisherRedis.publish(
+      "group-up",
+      JSON.stringify({ id: updated.id, value: 30 + (data.name?.length ?? 0) }),
+    );
+
+    return updated;
   });
 
 export const connectUserToGroupProcedure = protectedProcedure

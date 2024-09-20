@@ -5,18 +5,16 @@ const { withNativeWind } = require("nativewind/metro");
 
 const path = require("path");
 
-const config = withTurborepoManagedCache(
-  withMonorepoPaths(
-    withNativeWind(getDefaultConfig(__dirname), {
-      input: "./src/styles.css",
-      configPath: "./tailwind.config.ts",
-    }),
-  ),
+const config = withMonorepoPaths(
+  withNativeWind(getDefaultConfig(__dirname), {
+    input: "./src/styles.css",
+    configPath: "./tailwind.config.ts",
+  }),
 );
 
 // XXX: Resolve our exports in workspace packages
-// https://github.com/expo/expo/issues/26926
-config.resolver.unstable_enablePackageExports = true;
+// // https://github.com/expo/expo/issues/26926
+// config.resolver.unstable_enablePackageExports = true;
 
 module.exports = config;
 
@@ -41,20 +39,5 @@ function withMonorepoPaths(config) {
     path.resolve(workspaceRoot, "node_modules"),
   ];
 
-  return config;
-}
-
-/**
- * Move the Metro cache to the `.cache/metro` folder.
- * If you have any environment variables, you can configure Turborepo to invalidate it when needed.
- *
- * @see https://turbo.build/repo/docs/reference/configuration#env
- * @param {import('expo/metro-config').MetroConfig} config
- * @returns {import('expo/metro-config').MetroConfig}
- */
-function withTurborepoManagedCache(config) {
-  config.cacheStores = [
-    new FileStore({ root: path.join(__dirname, ".cache/metro") }),
-  ];
   return config;
 }
