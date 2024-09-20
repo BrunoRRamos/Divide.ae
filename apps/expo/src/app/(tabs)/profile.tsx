@@ -1,9 +1,10 @@
-import { useState } from "react";
 import { useAuth } from "@clerk/clerk-expo";
+import { useState } from "react";
 
 import { ScreenView } from "~/components/layout/ScreenView";
 import { Button, Text } from "~/components/ui";
 import { api } from "~/utils/api";
+import { EditProfileForm } from "../../components/auth/update-user";
 
 export default function Profile() {
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,7 @@ export default function Profile() {
       >
         <Text>Sign out</Text>
       </Button>
-      <Button
+      {/* <Button
         onPress={async () => {
           setLoading(true);
           await mutate({
@@ -48,7 +49,8 @@ export default function Profile() {
         loading={loading}
       >
         <Text>Test</Text>
-      </Button>
+      </Button> */}
+      <EditProfileForm />
     </ScreenView>
   );
 }
