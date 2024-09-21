@@ -13,7 +13,6 @@ it("Should create a new group", async () => {
   const createGroup = await caller.group.create.one({
     name: "Aniversario de Caique",
     description: "Comprar torta, salgados e refrigerante",
-    userId: "kffjjek3345",
     fixedTax: 0,
     variableTax: 0,
   });

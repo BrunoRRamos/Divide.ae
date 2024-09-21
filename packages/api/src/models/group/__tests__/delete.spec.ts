@@ -13,7 +13,6 @@ it("Should delete a group", async () => {
   const baseGroup = await caller.group.create.one({
     name: "Contas do mes",
     description: "Organizar as contas do mes",
-    userId: "ewfewwv335dcv",
     fixedTax: 0,
     variableTax: 0,
   });
