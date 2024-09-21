@@ -1,12 +1,13 @@
 import { useMemo, useState } from "react";
-import { ToastAndroid, View } from "react-native";
+import { View } from "react-native";
+import toast from "react-native-toast-message";
 import { router } from "expo-router";
 import { useUser } from "@clerk/clerk-expo";
 import { FormikProvider, useFormik } from "formik";
 import * as yup from "yup";
 
+import type { HandleSubmit } from "~/components/form/types";
 import { TextField } from "~/components/form/TextField";
-import { HandleSubmit } from "~/components/form/types";
 import { Button, Text } from "~/components/ui";
 
 export function EditProfileForm() {
@@ -27,8 +28,8 @@ export function EditProfileForm() {
 
   const initialValues = useMemo(
     () => ({
-      name: user?.username || "",
-      email: user?.emailAddresses[0]?.emailAddress || "",
+      name: user?.username ?? "",
+      email: user?.emailAddresses[0]?.emailAddress ?? "",
       currentPassword: "",
       newPassword: "",
     }),
@@ -62,11 +63,10 @@ export function EditProfileForm() {
         await user?.update(updates);
       }
 
-      ToastAndroid.showWithGravity(
-        "Perfil atualizado com sucesso!",
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
+      toast.show({
+        type: "success",
+        text1: "Perfil atualizado com sucesso!",
+      });
 
       router.replace("/");
     } catch (e: any) {
@@ -79,11 +79,11 @@ export function EditProfileForm() {
         } else {
           helpers.setStatus({ general: "Erro ao atualizar usuário." });
         }
-        ToastAndroid.showWithGravity(
-          "Erro ao atualizar usuário!",
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        );
+
+        toast.show({
+          type: "error",
+          text1: "Erro ao atualizar usuário!",
+        });
       }
     } finally {
       setLoading(false);
