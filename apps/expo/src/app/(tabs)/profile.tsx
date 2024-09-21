@@ -1,5 +1,6 @@
-import { useAuth } from "@clerk/clerk-expo";
 import { useState } from "react";
+import { router } from "expo-router";
+import { useAuth } from "@clerk/clerk-expo";
 
 import { ScreenView } from "~/components/layout/ScreenView";
 import { Button, Text } from "~/components/ui";
@@ -26,17 +27,20 @@ export default function Profile() {
 
   return (
     <ScreenView className="p-10">
+      <EditProfileForm />
       <Button
         variant="destructive"
         onPress={async () => {
           setLoading(true);
           await clerk.signOut();
           setLoading(false);
+          router.replace("/sign-in");
         }}
         loading={loading}
       >
         <Text>Sign out</Text>
       </Button>
+
       {/* <Button
         onPress={async () => {
           setLoading(true);
@@ -50,7 +54,6 @@ export default function Profile() {
       >
         <Text>Test</Text>
       </Button> */}
-      <EditProfileForm />
     </ScreenView>
   );
 }
