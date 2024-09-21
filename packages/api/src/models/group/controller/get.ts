@@ -18,6 +18,7 @@ export const getOneGroupProcedure = protectedProcedure
       },
       include: {
         users: true,
+        bills: { orderBy: { createdAt: "desc" } },
       },
     });
   });
