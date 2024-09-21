@@ -5,6 +5,7 @@ import {
   getAllGroupsProcedure,
   getOneGroupProcedure,
   getTotalValueFromGroupProcedure,
+  getOneGroupProcedureWithTotalValue,
 } from "./controller/get";
 import {
   connectUserToGroupProcedure,
@@ -15,6 +16,7 @@ const getRouter = createTRPCRouter({
   one: getOneGroupProcedure,
   many: getAllGroupsProcedure,
   value: getTotalValueFromGroupProcedure,
+  totalValue: getOneGroupProcedureWithTotalValue,
 });
 
 const createRouter = createTRPCRouter({

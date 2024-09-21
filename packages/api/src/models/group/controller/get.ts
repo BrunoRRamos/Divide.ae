@@ -11,15 +11,57 @@ export const getOneGroupProcedure = protectedProcedure
     return ctx.db.group.findUnique({
       where: {
         id: input.id,
-        OR: [
-          { users: { some: { id: ctx.auth?.user.id } } },
-          { userId: ctx.auth?.user.id },
-        ],
+        OR: [{ users: { some: { id: ctx.auth?.user.id } } }],
       },
       include: {
         users: true,
         bills: { orderBy: { createdAt: "desc" } },
       },
+    });
+  });
+
+export const getOneGroupProcedureWithTotalValue = protectedProcedure
+  .input(z.object({ id: z.string() }))
+  .subscription(({ ctx, input }) => {
+    return observable((emit) => {
+      const handler = async (channel: string, message: string) => {
+        try {
+          const groupId = (JSON.parse(message) as G)?.id;
+
+          const groupData = await ctx.db.group.findUnique({
+            where: { id: groupId},
+            include: { bills: true },
+          });
+
+          if (!groupData) {
+            emit.next(null); // Caso o grupo não seja encontrado
+            return;
+          }
+
+          const totalValue = groupData.bills.reduce(
+            (sum, bill) => sum + bill.value,
+            0,
+          );
+
+          emit.next({
+            id: groupData.id,
+            value: totalValue,
+          });
+        } catch (error) {
+          console.error("Erro ao buscar dados do grupo:", error);
+          emit.next(null);
+        }
+      };
+
+      subscriberRedis.subscribe(`group-${input.id}`);
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      subscriberRedis.on("message", handler);
+
+      return () => {
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        subscriberRedis.off("message", handler);
+        subscriberRedis.unsubscribe(`group-${input.id}`);
+      };
     });
   });
 

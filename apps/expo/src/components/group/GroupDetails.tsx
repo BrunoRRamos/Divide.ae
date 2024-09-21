@@ -6,9 +6,10 @@ import { GroupMembers } from "./GroupMembers";
 
 interface GroupDetailsProps {
   group: Group;
+  value: number;
 }
 
-export function GroupDetails({ group }: GroupDetailsProps) {
+export function GroupDetails({ group, value }: GroupDetailsProps) {
   return (
     <View className="flex gap-2">
       <View className="flex gap-2">
@@ -18,7 +19,7 @@ export function GroupDetails({ group }: GroupDetailsProps) {
             {new Intl.NumberFormat("default", {
               currency: "BRL",
               style: "currency",
-            }).format(240.5)}
+            }).format(value)}
           </Text>
           <GroupMembers group={group} />
         </View>
