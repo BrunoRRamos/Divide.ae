@@ -6,10 +6,11 @@ import { GroupMembers } from "./GroupMembers";
 
 interface GroupDetailsProps {
   group: Group;
-  value: number;
+  totalPaid: number;
+  totalValue: number;
 }
 
-export function GroupDetails({ group, value }: GroupDetailsProps) {
+export function GroupDetails({ group, totalPaid , totalValue }: GroupDetailsProps) {
   return (
     <View className="flex gap-2">
       <View className="flex gap-2">
@@ -19,7 +20,7 @@ export function GroupDetails({ group, value }: GroupDetailsProps) {
             {new Intl.NumberFormat("default", {
               currency: "BRL",
               style: "currency",
-            }).format(value)}
+            }).format(totalPaid)}
           </Text>
           <GroupMembers group={group} />
         </View>
@@ -30,7 +31,7 @@ export function GroupDetails({ group, value }: GroupDetailsProps) {
           {new Intl.NumberFormat("default", {
             currency: "BRL",
             style: "currency",
-          }).format(300)}
+          }).format(totalValue)}
         </Text>
       </View>
       <Progress value={50} className="w-full" />
