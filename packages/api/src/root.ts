@@ -1,5 +1,5 @@
 import { billRouter } from "./models/bill/router";
-import { groupRouter } from "./models/group/group";
+import { groupRouter } from "./models/group/router";
 import { paymentRouter } from "./models/payment/router";
 import { userRouter } from "./models/user/router";
 import { createTRPCRouter } from "./trpc";
