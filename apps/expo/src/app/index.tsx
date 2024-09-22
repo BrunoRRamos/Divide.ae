@@ -13,11 +13,39 @@ import {
 } from "lucide-react-native";
 
 import { Button, Text } from "~/components/ui";
+import { api } from "~/utils/api";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const { user } = useUser();
   const clerk = useAuth();
+
+  const handleSignOut = async () => {
+    setLoading(true);
+    await clerk.signOut();
+    setLoading(false);
+  };
+
+  const paymentQuery = api.payment.get.many.user.useQuery(user?.id!, {
+    enabled: !!user?.id,
+  });
+
+  const groupIds = paymentQuery.data
+    ? [...new Set(paymentQuery.data.map((payment) => payment.groupId))]
+    : [];
+
+  const groupQueries = groupIds.map((groupId) =>
+    api.group.get.one.useQuery({ id: groupId }, { enabled: !!groupId }),
+  );
+
+  const groupsMap = new Map();
+  groupQueries.forEach((groupQuery, index) => {
+    if (groupQuery.data) {
+      groupsMap.set(groupIds[index], groupQuery.data);
+    }
+  });
 
   if (!clerk.isLoaded) {
     return (
@@ -47,7 +75,7 @@ export default function Home() {
 
   return (
     <View className="flex-1 bg-white p-6">
-      <View className="mb-4 flex flex-row items-center justify-between">
+      <View className="mb-4 mt-4 flex flex-row items-center justify-between">
         <View className="flex flex-row items-center">
           <View className="h-10 w-10 items-center justify-center rounded-full bg-gray-300">
             <Text>{userInitials}</Text>
@@ -63,59 +91,59 @@ export default function Home() {
           <TouchableOpacity onPress={() => console.log("Notificações")}>
             <LucideBell size={24} color={"#000"} />
           </TouchableOpacity>
-          <Button
-            variant="link"
-            onPress={async () => {
-              setLoading(true);
-              await clerk.signOut();
-              setLoading(false);
-            }}
-            loading={loading}
-          >
+          <Button variant="link" onPress={handleSignOut} loading={loading}>
             <LucideLogOut size={24} color={"#950101"} />
           </Button>
         </View>
       </View>
 
       <Text className="mb-4 text-xl text-black">Pagamentos Pendentes</Text>
-      <Text className="mb-9 text-2xl font-bold text-black">R$ 537,50</Text>
+      <Text className="mb-9 text-2xl font-bold text-black">
+        {paymentQuery.isLoading
+          ? "Carregando..."
+          : `R$ ${paymentQuery.data
+              ?.reduce((sum, payment) => sum + payment.value, 0)
+              .toFixed(2)}`}
+      </Text>
 
       <ScrollView className="flex-1">
-        <View className="mb-4 rounded-md border border-gray-300 p-4">
-          <View className="flex flex-row items-center justify-between">
-            <Text className="text-lg text-black">Aniversário de Caique</Text>
-            <Text className="text-sm text-gray-600">Aberto</Text>
+        {paymentQuery.isLoading ? (
+          <Text>Carregando pagamentos...</Text>
+        ) : paymentQuery.data?.length === 0 ? (
+          <View className="mt-8 items-center justify-between">
+            <Text>Não há pagamentos pendentes</Text>
           </View>
+        ) : (
+          paymentQuery.data?.map((payment) => {
+            const group = groupsMap.get(payment.groupId);
+            return group ? (
+              <View
+                key={payment.id}
+                className="mb-4 rounded-md border border-gray-300 p-4"
+              >
+                <View className="flex flex-row items-center justify-between">
+                  <Text className="text-lg text-black">{group.name}</Text>
+                  <Text className="text-sm text-gray-600">Aberto</Text>
+                </View>
 
-          <View className="mt-2 flex flex-row items-center justify-between">
-            <Text className="text-lg font-bold text-black">R$ 37,50</Text>
-            <Text className="text-sm font-bold">até 27/02</Text>
-          </View>
+                <View className="mt-2 flex flex-row items-center justify-between">
+                  <Text className="text-lg font-bold text-black">
+                    R$ {payment.value.toFixed(2)}
+                  </Text>
+                  <Text className="text-sm font-bold">
+                    até {new Date(payment.createdAt).toLocaleDateString()}
+                  </Text>
+                </View>
 
-          <View className="mt-2 items-end">
-            <TouchableOpacity onPress={() => console.log("Seta clicada")}>
-              <LucideArrowRight size={20} color={"#000"} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View className="mb-4 rounded-md border border-gray-300 p-4">
-          <View className="flex flex-row items-center justify-between">
-            <Text className="text-lg text-black">Contas de casa</Text>
-            <Text className="text-sm text-gray-600">Aberto</Text>
-          </View>
-
-          <View className="mt-2 flex flex-row items-center justify-between">
-            <Text className="text-lg font-bold text-black">R$ 500,00</Text>
-            <Text className="text-sm font-bold">até 27/02</Text>
-          </View>
-
-          <View className="mt-2 items-end">
-            <TouchableOpacity onPress={() => console.log("Seta clicada")}>
-              <LucideArrowRight size={20} color={"#000"} />
-            </TouchableOpacity>
-          </View>
-        </View>
+                <View className="mt-2 items-end">
+                  <TouchableOpacity onPress={() => console.log("Seta clicada")}>
+                    <LucideArrowRight size={20} color={"#000"} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : null;
+          })
+        )}
       </ScrollView>
 
       <View className="mb-2 h-px bg-gray-300" />
