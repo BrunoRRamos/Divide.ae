@@ -24,7 +24,7 @@ const GroupPage = () => {
 
   const [value, setValue] = useState(0);
 
-  api.group.get.totalValue.useSubscription({id: groupId}, {onData: (data) => setValue(data.value)});
+  api.group.get.totalValue.useSubscription({id: groupId}, {onData: (data) => setValue(data?.totalValue ?? 0)});
 
   const billMutarion = api.bill.create.one.useMutation();
   
@@ -45,11 +45,11 @@ const GroupPage = () => {
             groupId: groupId
           })}}>
             <Text>
-              chama na botta
+              chama na bota
             </Text>
           </Button>
           <View className="flex flex-row justify-between">
-            <GroupDetails group={group} value={value} />
+            <GroupDetails group={group} totalValue={value}  totalPaid={0}/>
           </View>
           <GroupTabs group={group} />
         </View>

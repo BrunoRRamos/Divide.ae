@@ -2,6 +2,8 @@
 import { observable } from "@trpc/server/observable";
 import { z } from "zod";
 
+import type { Group } from "@/db";
+
 import { subscriberRedis } from "../../../lib/redis";
 import { protectedProcedure } from "../../../trpc";
 
@@ -20,17 +22,29 @@ export const getOneGroupProcedure = protectedProcedure
     });
   });
 
+type GroupTotalValue = Group & {
+  totalValue: number;
+  totalPaid: number;
+};
+
 export const getOneGroupProcedureWithTotalValue = protectedProcedure
   .input(z.object({ id: z.string() }))
   .subscription(({ ctx, input }) => {
-    return observable((emit) => {
+    return observable<GroupTotalValue | null>((emit) => {
       const handler = async (channel: string, message: string) => {
         try {
           const groupId = (JSON.parse(message) as G)?.id;
 
           const groupData = await ctx.db.group.findUnique({
-            where: { id: groupId},
-            include: { bills: true },
+            where: {
+              id: groupId,
+              users: { some: { id: ctx.auth?.user.id } },
+            },
+            include: {
+              bills: true,
+              users: true,
+              payments: true,
+            },
           });
 
           if (!groupData) {
@@ -38,14 +52,19 @@ export const getOneGroupProcedureWithTotalValue = protectedProcedure
             return;
           }
 
-          const totalValue = groupData.bills.reduce(
-            (sum, bill) => sum + bill.value,
-            0,
-          );
+          const totalValue =
+            groupData.bills.reduce((sum, bill) => sum + bill.value, 0) *
+              (1 + (groupData.variableTax ?? 0)) +
+            (groupData.fixedTax ?? 0) * groupData.users.length;
+
+          const totalPaid = groupData.payments
+            .filter((payment) => payment.accepted)
+            .reduce((sum, payment) => sum + payment.value, 0);
 
           emit.next({
-            id: groupData.id,
-            value: totalValue,
+            ...groupData,
+            totalValue: totalValue,
+            totalPaid: totalPaid,
           });
         } catch (error) {
           console.error("Erro ao buscar dados do grupo:", error);
