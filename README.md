@@ -38,26 +38,23 @@
 
 ---
 
-## Para executar os testes
+## To Run the Tests
 
-1. **Realizar todos os passos de RUN**
-   <br>
+1. **Complete all the RUN steps**
 
-2. **Ir para o diretorio da API:**
+2. **Navigate to the API directory:**
 
    ```bash
    cd .\packages\api\
    ```
 
-   <br>
-
-3. **Executar o comando:**
+3. **Run the command:**
 
    ```bash
    pnpm test-coverage
    ```
 
-4. **Executar os teste via interface grafica:**
+4. **Run the tests via the graphical interface:**
    ```bash
    pnpm test-ui
    ```
