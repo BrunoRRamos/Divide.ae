@@ -14,7 +14,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary active:opacity-90",
         destructive: "bg-destructive active:opacity-90",
-        outline: "border border-input bg-background active:bg-accent",
+        outline: "border border-input bg-background active:bg-gray-50",
         secondary: "bg-secondary active:opacity-80",
         ghost: "active:bg-accent",
         link: "",
@@ -38,7 +38,7 @@ const buttonTextVariants = cva("text-base font-medium text-foreground", {
     variant: {
       default: "text-primary-foreground",
       destructive: "text-destructive-foreground",
-      outline: "group-active:text-accent-foreground",
+      outline: "text-primary-foreground",
       secondary:
         "text-secondary-foreground group-active:text-secondary-foreground",
       ghost: "group-active:text-accent-foreground",
