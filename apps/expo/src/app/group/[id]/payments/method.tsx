@@ -1,70 +1,15 @@
 import React, { useState } from "react";
-import { Alert, Platform, Text, TouchableOpacity, View } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import { Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
 import { CreditCard, DollarSign, QrCode } from "lucide-react-native";
 
 import { Button } from "~/components/ui";
-import { supabase } from "~/lib/supabase";
 
-const PaymentMethods = () => {
+export default function PaymentMethods() {
   const [selected, setSelected] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
 
   const handleSelect = (method: "Pix" | "Cartao" | "Dinheiro") => {
     setSelected(method);
-  };
-
-  const pickImage = async () => {
-    if (Platform.OS !== "web") {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== ImagePicker.PermissionStatus.GRANTED) {
-        Alert.alert(
-          "Desculpe, precisamos de permissão para acessar a galeria!",
-        );
-        return;
-      }
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets.length && result.assets.length > 0) {
-      const asset = result.assets[0];
-      if (asset) {
-        await uploadImage(asset);
-      } else {
-        Alert.alert("Erro", "Não foi possível obter a URI da imagem.");
-      }
-    } else {
-      Alert.alert("Nenhuma imagem selecionada");
-    }
-  };
-
-  const uploadImage = async (image: ImagePicker.ImagePickerAsset) => {
-    try {
-      setUploading(true);
-      const filePath = `public/payments/${image.fileName}`;
-
-      if (!image.uri) {
-        Alert.alert("Erro desconhecido");
-      }
-
-      const arraybuffer = await fetch(image.uri).then((res) =>
-        res.arrayBuffer(),
-      );
-
-      await supabase.storage.from("payments").upload(filePath, arraybuffer, {
-        contentType: image.mimeType ?? "image/jpeg",
-      });
-    } catch {
-      Alert.alert("An error occurred");
-    } finally {
-      setUploading(false);
-    }
   };
 
   return (
@@ -109,15 +54,15 @@ const PaymentMethods = () => {
         </TouchableOpacity>
       </View>
       <Button
-        onPress={pickImage}
-        className="items-center rounded-lg bg-gray-300 p-4"
+        onPress={() => {
+          router.push("/payments/receipt");
+        }}
+        className="items-center rounded-lg p-4"
         disabled={!selected}
-        loading={uploading}
+        variant="default"
       >
         <Text>Avançar</Text>
       </Button>
     </View>
   );
-};
-
-export default PaymentMethods;
+}

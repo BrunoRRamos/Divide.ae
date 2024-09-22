@@ -72,10 +72,26 @@ model Payment {
   id       String  @id @default(cuid())
   value    Float
   accepted Boolean @default(false)
-  userId   String
-  user     User    @relation(fields: [userId], references: [id])
-  groupId  String
-  group    Group   @relation(fields: [groupId], references: [id])
+
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+  groupId String
+  group   Group  @relation(fields: [groupId], references: [id])
+
+  receipts Receipt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Receipt {
+  id       String @id @default(cuid())
+  fileName String
+  uri      String
+  ext      String
+
+  payment   Payment @relation(fields: [paymentId], references: [id])
+  paymentId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

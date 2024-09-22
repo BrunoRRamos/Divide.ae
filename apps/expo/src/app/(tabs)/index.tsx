@@ -5,7 +5,6 @@ import { useAuth } from "@clerk/clerk-expo";
 import { GroupList } from "~/components/group/groupList";
 import { ScreenView } from "~/components/layout/ScreenView";
 import { Text } from "~/components/ui";
-import PaymentMethods from "../pagamento/listagem";
 
 export default function Home() {
   const clerk = useAuth();
@@ -27,8 +26,6 @@ export default function Home() {
   return (
     <ScreenView>
       <GroupList />
-
-      <PaymentMethods />
     </ScreenView>
   );
 }
