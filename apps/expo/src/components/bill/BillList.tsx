@@ -42,7 +42,7 @@ export function BillList({ group }: BillListProps) {
             (group.fixedTax ?? 0);
 
           return (
-            <View className="mt-6 flex-row justify-between rounded-md bg-primary p-1 px-4">
+            <View className="-mb-2 mt-6 flex-row justify-between rounded-md bg-primary p-1 px-4">
               <Typograhy.Lead>{user?.name}'s bills </Typograhy.Lead>
               <Typograhy.H4>{formatCurrency(totalWithTax)}</Typograhy.H4>
             </View>
