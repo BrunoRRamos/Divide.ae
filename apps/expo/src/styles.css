@@ -46,14 +46,4 @@
     --input: 213 27% 84%;
     --ring: 240 4.9% 83.9%;
   }
-
-  module.exports {
-    theme {
-      extend {
-        colors {
-          background: "hsl(0, 0%, 100%)";
-        }
-      }
-    }
-  }
 }
