@@ -42,7 +42,6 @@ export function SignInForm() {
         router.replace("/");
       }
     } catch (e) {
-      console.log(JSON.stringify(e, null, 2));
       if (isClerkAPIResponseError(e)) {
         switch (e.errors[0]?.code) {
           case "form_identifier_not_found":
@@ -68,7 +67,7 @@ export function SignInForm() {
   });
 
   return (
-    <View className="flex flex-col justify-center gap-4 px-4">
+    <View className="flex flex-col justify-center gap-4">
       <FormikProvider value={formik}>
         <TextField label="E-mail or username" name="credential" />
         <TextField secureTextEntry label="Password" name="password" />

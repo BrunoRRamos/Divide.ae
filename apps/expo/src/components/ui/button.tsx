@@ -2,13 +2,13 @@ import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Pressable, View } from "react-native";
 import { cva } from "class-variance-authority";
-import { Loader2 } from "lucide-react-native";
 
 import { TextClassContext } from "~/components/ui/text";
 import { cn } from "~/lib/utils";
+import { Loading } from "../layout/Loading";
 
 const buttonVariants = cva(
-  "group flex items-center justify-center rounded-md",
+  "group flex items-center justify-center rounded-2xl",
   {
     variants: {
       variant: {
@@ -20,7 +20,7 @@ const buttonVariants = cva(
         link: "",
       },
       size: {
-        default: "h-12 px-5 py-3",
+        default: "h-14 px-5 py-3",
         sm: "h-9 rounded-md px-3",
         lg: "h-14 rounded-md px-8",
         icon: "h-10 w-10",
@@ -82,11 +82,7 @@ const Button = React.forwardRef<
       >
         {(s) => (
           <View className="flex flex-row items-center gap-2">
-            {loading && (
-              <View className="animate-spin">
-                <Loader2 color="black" />
-              </View>
-            )}
+            {loading && <Loading />}
             {typeof children === "function" ? children(s) : children}
           </View>
         )}

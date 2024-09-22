@@ -1,13 +1,15 @@
 import "../styles.css";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemeProvider } from "@react-navigation/native";
 
+import { Loading } from "~/components/layout/Loading";
 import { useColorScheme } from "~/hooks/useColorScheme";
 import { tokenCache } from "~/lib/clerk";
 import { DARK_THEME, LIGHT_THEME } from "~/lib/constants";
@@ -60,11 +62,16 @@ export default function RootLayout() {
         <ClerkLoaded>
           <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
             <SafeAreaProvider>
-              <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-              <Stack
-                screenOptions={{ headerShown: false }}
-                initialRouteName="home"
-              />
+              <Suspense fallback={<Loading screen />}>
+                <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                </Stack>
+                <Toast />
+              </Suspense>
             </SafeAreaProvider>
           </ThemeProvider>
         </ClerkLoaded>

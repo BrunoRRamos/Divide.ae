@@ -1,13 +1,13 @@
-import { isClerkAPIResponseError, useSignUp } from "@clerk/clerk-expo";
-import { FormikProvider, useFormik } from "formik";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
+import { isClerkAPIResponseError, useSignUp } from "@clerk/clerk-expo";
+import { FormikProvider, useFormik } from "formik";
 import * as yup from "yup";
 
+import type { HandleSubmit } from "../form/types";
 import { Button, Text } from "~/components/ui";
 import { TextField } from "../form/TextField";
-import type { HandleSubmit } from "../form/types";
-import { SignUpVerify } from "./signUpVerify";
+import { SignUpVerify } from "./SignUpVerify";
 
 export function SignUpForm() {
   const clerk = useSignUp();
@@ -58,10 +58,11 @@ export function SignUpForm() {
       if (isClerkAPIResponseError(e)) {
         switch (e.errors[0]?.code) {
           case "form_identifier_exists":
-            helpers.setErrors({ email: "Email already taken" });
-            break;
-          case "form_username_already_taken":
-            helpers.setErrors({ username: "Username already taken" });
+            helpers.setErrors(
+              e.errors[0]?.message.includes("user")
+                ? { username: "Username already taken" }
+                : { email: "Email already taken" },
+            );
             break;
         }
       }
@@ -76,29 +77,29 @@ export function SignUpForm() {
   });
 
   return (
-      <View className="flex flex-col justify-center gap-4 px-4">
-        {pendingVerification ? (
-          <SignUpVerify />
-        ) : (
-          <FormikProvider value={form}>
-            <TextField label="Username" name="username" />
-            <TextField label="E-mail" name="email" />
-            <TextField secureTextEntry label="Password" name="password" />
-            <TextField
-              secureTextEntry
-              label="Confirm password"
-              name="confirmPassword"
-            />
-            <Button
-              loading={loading}
-              onPress={() => {
-                form.handleSubmit();
-              }}
-            >
-              <Text>Sign in</Text>
-            </Button>
-          </FormikProvider>
-        )}
-      </View>
+    <View className="flex flex-col justify-center gap-4">
+      {pendingVerification ? (
+        <SignUpVerify />
+      ) : (
+        <FormikProvider value={form}>
+          <TextField label="Username" name="username" />
+          <TextField label="E-mail" name="email" />
+          <TextField secureTextEntry label="Password" name="password" />
+          <TextField
+            secureTextEntry
+            label="Confirm password"
+            name="confirmPassword"
+          />
+          <Button
+            loading={loading}
+            onPress={() => {
+              form.handleSubmit();
+            }}
+          >
+            <Text>Sign in</Text>
+          </Button>
+        </FormikProvider>
+      )}
+    </View>
   );
 }

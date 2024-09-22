@@ -35,3 +35,29 @@
    ```bash
    pnpm dev
    ```
+
+---
+
+## Para executar os testes
+
+1. **Realizar todos os passos de RUN**
+   <br>
+
+2. **Ir para o diretorio da API:**
+
+   ```bash
+   cd .\packages\api\
+   ```
+
+   <br>
+
+3. **Executar o comando:**
+
+   ```bash
+   pnpm test-coverage
+   ```
+
+4. **Executar os teste via interface grafica:**
+   ```bash
+   pnpm test-ui
+   ```
