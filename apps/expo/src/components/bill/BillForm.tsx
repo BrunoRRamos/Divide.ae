@@ -40,8 +40,7 @@ export function BillForm({ onSubmit, bill }: BillFormProps) {
   const initialValues = useMemo<ValidationSchema<typeof validationSchema>>(
     () => ({
       name: bill?.name ?? "",
-      // @ts-expect-error value is a string here
-      value: bill?.value ? bill.value : undefined,
+      value: bill?.value ?? 0,
       quantity: bill?.quantity ?? 1,
       description: bill?.description ?? "",
     }),
