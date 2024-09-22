@@ -45,15 +45,21 @@ export function BillIncrement({ bill, className }: BillIncrementProps) {
   };
 
   const handleUpdateBillQuantity = (group: Group, quantity: number) => {
+    let prevQuantity = 0;
+
     const updatedBills = group.bills.map((b) => {
       if (b.id === bill.id) {
+        prevQuantity = b.quantity;
         return { ...b, quantity };
       }
 
       return b;
     });
 
-    return { ...group, bills: updatedBills };
+    const totalValue =
+      group.totalValue + (quantity - prevQuantity) * bill.value;
+
+    return { ...group, bills: updatedBills, totalValue };
   };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
