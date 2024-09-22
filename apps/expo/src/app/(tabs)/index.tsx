@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Redirect } from "expo-router";
 import { useAuth, useUser } from "@clerk/clerk-expo";
@@ -11,6 +11,7 @@ import {
   LucideSearch,
 } from "lucide-react-native";
 
+import { ScreenView } from "~/components/layout/ScreenView";
 import { Button, Text } from "~/components/ui";
 import { api } from "~/utils/api";
 
@@ -32,7 +33,9 @@ export default function Home() {
   });
 
   const groupIds = paymentQuery.data
-    ? [...new Set(paymentQuery.data.map((payment) => payment.groupId))]
+    ? paymentQuery.data
+        .map((payment) => payment.groupId)
+        .filter((value, index, self) => self.indexOf(value) === index)
     : [];
 
   const groupQueries = groupIds.map((groupId) =>
