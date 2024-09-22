@@ -17,19 +17,21 @@
 
 3. **Set up your env variables according to the .env.example file**
 
-4. **With Docker already installed on your machine, run the following command:**
+4. **In the root of /apps/expo, adjust your .env file with the environment variables available in item 7 of the document**
+
+5. **With Docker already installed on your machine, run the following command:**
 
    ```bash
    docker compose up -d
    ```
 
-5. **Run Prisma migrations**
+6. **Run Prisma migrations**
 
    ```bash
    pnpm db:migrate
    ```
 
-6. **Run 🚀**
+7. **Run 🚀**
    ```bash
    pnpm dev
    ```
