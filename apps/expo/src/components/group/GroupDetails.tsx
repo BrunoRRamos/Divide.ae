@@ -12,13 +12,13 @@ export function GroupDetails({ group }: GroupDetailsProps) {
   return (
     <View className="flex gap-2">
       <View className="flex gap-2">
-        <Text className="text-sm">Total pago</Text>
+        <Text className="text-sm">Total paid</Text>
         <View className="flex w-full flex-row justify-between gap-2">
           <Text className="text-4xl font-bold">
             {new Intl.NumberFormat("default", {
               currency: "BRL",
               style: "currency",
-            }).format(240.5)}
+            }).format(group.totalPaid)}
           </Text>
           <GroupMembers group={group} />
         </View>
@@ -29,10 +29,10 @@ export function GroupDetails({ group }: GroupDetailsProps) {
           {new Intl.NumberFormat("default", {
             currency: "BRL",
             style: "currency",
-          }).format(300)}
+          }).format(group.totalValue)}
         </Text>
       </View>
-      <Progress value={50} className="w-full" />
+      <Progress value={group.totalPaid % 100} className="w-full" />
     </View>
   );
 }

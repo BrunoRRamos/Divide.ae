@@ -100,6 +100,7 @@ it.skip("should not create a bill if user does not belong to group", async () =>
       description: "Comprar torta, salgados e refrigerante",
       fixedTax: 0,
       userId: groupOwner.id,
+      code: "1234",
     },
     include: { users: true },
   });

@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { Group } from "~/app/group/[id]";
+import type { Group } from "~/app/group/[id]";
 import { Text } from "../ui";
 
 interface GroupBillsProps {

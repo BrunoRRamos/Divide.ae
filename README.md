@@ -3,49 +3,58 @@
 ## Run
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/BrunoRRamos/Divide.ae.git
    cd divide.ae
    ```
 
 2. **Install packages:**
+
    ```bash
    pnpm i
    ```
 
-3. **Set up your env variables according to the .env.example file**
-<br>
+3. **Set up your environment variables according to the .env.example file, and add the environment variables available in item 7**
 
-4. **Execute Prisma migrations**
+4. **In the root of /apps/expo, adjust your .env file with the environment variables available in item 7 of the document**
+
+5. **With Docker already installed on your machine, run the following command:**
+
    ```bash
-   pnpm migrate
-
+   docker compose up -d
    ```
 
-5. **Run 🚀**
+6. **Run Prisma migrations**
+
+   ```bash
+   pnpm db:migrate
+   ```
+
+7. **Run 🚀**
    ```bash
    pnpm dev
    ```
 
---------
+---
 
-## Para executar os testes
+## To Run the Tests
 
-1. **Realizar todos os passos de RUN**
-<br>
+1. **Complete all the RUN steps**
 
-2. **Ir para o diretorio da API:**
+2. **Navigate to the API directory:**
+
    ```bash
    cd .\packages\api\
    ```
-<br>
 
-3. **Executar o comando:**
+3. **Run the command:**
+
    ```bash
    pnpm test-coverage
    ```
 
-4. **Executar os teste via interface grafica:**
+4. **Run the tests via the graphical interface:**
    ```bash
    pnpm test-ui
    ```

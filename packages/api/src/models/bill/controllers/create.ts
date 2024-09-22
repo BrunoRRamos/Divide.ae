@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { publisherRedis } from "../../../lib/redis";
 import { publicProcedure } from "../../../trpc";
 import { isUserInGroup } from "./utils";
 
@@ -28,7 +29,7 @@ export const createBill = publicProcedure
     }
 
     const authorized = await isUserInGroup({
-      userId: ctx.auth?.user?.id ?? "",
+      userId: ctx.auth?.user.id ?? "",
       groupId: input.groupId,
       ctx,
     });
@@ -40,7 +41,14 @@ export const createBill = publicProcedure
       });
     }
 
-    return ctx.db.bill.create({
-      data: { ...input, userId: ctx.auth?.user?.id ?? "" },
+    const bill = await ctx.db.bill.create({
+      data: { ...input, userId: ctx.auth?.user.id ?? "" },
     });
+
+    await publisherRedis.publish(
+      `group-${input.groupId}`,
+      JSON.stringify({ id: input.groupId }),
+    );
+
+    return bill;
   });

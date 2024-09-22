@@ -27,7 +27,6 @@ beforeAll(async () => {
   const group = await caller.group.create.one({
     name: "Aniversario de Caique",
     description: "Comprar torta, salgados e refrigerante",
-    userId: "kffjjek3345",
     closedAt: undefined,
     fixedTax: 0,
     variableTax: 0,

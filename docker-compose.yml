@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   database:
     image: postgres
@@ -19,8 +17,6 @@ services:
     restart: always
     ports:
       - 6379:6379
-    volumes:
-      - redisdata:/data/redis
 
 volumes:
   pgdata:
