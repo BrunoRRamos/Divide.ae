@@ -1,10 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Redirect } from "expo-router";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import {
   LucideArrowRight,
-  LucideBell,
   LucideHouse,
   LucideLogOut,
   LucidePlus,
@@ -90,9 +89,6 @@ export default function Home() {
           </View>
         </View>
         <View className="flex flex-row items-center">
-          <TouchableOpacity onPress={() => console.log("Notificações")}>
-            <LucideBell size={24} color={"#000"} />
-          </TouchableOpacity>
           <Button variant="link" onPress={handleSignOut} loading={loading}>
             <LucideLogOut size={24} color={"#950101"} />
           </Button>
