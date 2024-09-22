@@ -8,17 +8,21 @@
   "scripts": {
     "build": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "pnpm with-env tsx --watch --env-file=../../.env src/index.ts",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
-    "with-env": "dotenv -e ../../.env --"
+    "with-env": "dotenv -e ../../.env --",
+    "test-coverage": "pnpm vitest --coverage",
+    "test-ui": "pnpm vitest --coverage.enabled=true --ui"
   },
   "dependencies": {
     "@/db": "workspace:*",
+    "@clerk/clerk-sdk-node": "^5.0.38",
     "@trpc/server": "catalog:",
-    "ioredis": "^5.4.1",
+    "@vitest/coverage-v8": "2.0.5",
+    "@vitest/ui": "^2.1.1",
     "dotenv-cli": "^7.4.2",
+    "ioredis": "^5.4.1",
     "prismock": "^1.33.1",
     "superjson": "2.2.1",
     "vitest": "^2.0.5",

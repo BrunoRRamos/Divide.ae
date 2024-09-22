@@ -26,16 +26,13 @@ const Label = React.forwardRef<
       onPressIn={onPressIn}
       onPressOut={onPressOut}
     >
-      <LabelPrimitive.Text
+      <Text
         ref={ref}
-        className={cn(
-          "text-base font-medium leading-none text-foreground",
-          className,
-        )}
+        className={cn("text-lg leading-none text-foreground", className)}
         {...props}
       >
-        <Text>{children}</Text>
-      </LabelPrimitive.Text>
+        {children}
+      </Text>
     </LabelPrimitive.Root>
   ),
 );

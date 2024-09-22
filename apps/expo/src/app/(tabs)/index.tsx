@@ -14,6 +14,7 @@ import {
 
 import { Button, Text } from "~/components/ui";
 import { api } from "~/utils/api";
+import { ScreenView } from "~/components/layout/ScreenView";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -49,11 +50,11 @@ export default function Home() {
 
   if (!clerk.isLoaded) {
     return (
-      <SafeAreaView>
+      <ScreenView>
         <View className="flex h-full flex-col items-center justify-center">
           <Text>loading</Text>
         </View>
-      </SafeAreaView>
+      </ScreenView>
     );
   }
 

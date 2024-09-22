@@ -1,7 +1,7 @@
+import { ErrorMessage, Field, useFormikContext } from "formik";
 import type { ComponentPropsWithoutRef, ElementRef } from "react";
 import { forwardRef } from "react";
 import { View } from "react-native";
-import { ErrorMessage, Field, useFormikContext } from "formik";
 
 import { Text } from "../ui";
 import { Input } from "../ui/input";
@@ -19,7 +19,9 @@ export const TextField = forwardRef<
 
   return (
     <View className="flex flex-col gap-1">
-      <Label nativeID={name}>{label}</Label>
+      <Label nativeID={name} >
+        {label}
+      </Label>
       <Field
         name={name}
         nativeID={name}

@@ -1,12 +1,22 @@
 import { createTRPCRouter } from "../../trpc";
 import { createOneGroupProcedure } from "./controller/create";
 import { deleteOneGroupProcedure } from "./controller/delete";
-import { getAllGroupsProcedure, getOneGroupProcedure } from "./controller/get";
-import { updateOneGroupProcedure } from "./controller/update";
+import {
+  getAllGroupsProcedure,
+  getOneGroupProcedure,
+  getTotalValueFromGroupProcedure,
+  getOneGroupProcedureWithTotalValue,
+} from "./controller/get";
+import {
+  connectUserToGroupProcedure,
+  updateOneGroupProcedure,
+} from "./controller/update";
 
 const getRouter = createTRPCRouter({
   one: getOneGroupProcedure,
   many: getAllGroupsProcedure,
+  value: getTotalValueFromGroupProcedure,
+  totalValue: getOneGroupProcedureWithTotalValue,
 });
 
 const createRouter = createTRPCRouter({
@@ -15,6 +25,7 @@ const createRouter = createTRPCRouter({
 
 const updateRouter = createTRPCRouter({
   one: updateOneGroupProcedure,
+  addUser: connectUserToGroupProcedure,
 });
 
 const deleteRouter = createTRPCRouter({

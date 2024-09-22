@@ -1,48 +1,75 @@
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-// import { auth, validateToken } from "@/auth";
+import type { User } from "@/db";
+import type { Session } from "@clerk/clerk-sdk-node";
+import type { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
+import type { CreateWSSContextFnOptions } from "@trpc/server/adapters/ws";
 import { db } from "@/db";
 
-/**
- * Isomorphic Session getter for API requests
- * - Expo requests will have a session token in the Authorization header
- * - Next.js requests will have a session token in cookies
- */
-//
-// const isomorphicGetSession = async (headers: Headers) => {
-//   const authToken = headers.get("Authorization") ?? null;
-//   if (authToken) return validateToken(authToken);
-//   return auth();
-// };
+import { clerkClient } from "./lib/clerk";
 
-/**
- * 1. CONTEXT
- *
- * This section defines the "contexts" that are available in the backend API.
- *
- * These allow you to access things when processing a request, like the database, the session, etc.
- *
- * This helper generates the "internals" for a tRPC context. The API handler and RSC clients each
- * wrap this and provides the required context.
- *
- * @see https://trpc.io/docs/server/context
- */
-export const createTRPCContext = (_opts: {
-  headers: Headers;
-  // session: Session | null;
-}) => {
-  // const authToken = opts.headers.get("Authorization") ?? null;
-  // const session = await isomorphicGetSession(opts.headers);
+type CreateContextOpts = CreateHTTPContextOptions | CreateWSSContextFnOptions;
 
-  // const source = opts.headers.get("x-trpc-source") ?? "unknown";
-  // console.log(">>> tRPC Request from", source, "by", session?.user);
+type CreateContextInnerOptions = Partial<CreateContextOpts> & {
+  authorization?: string;
+};
+
+export const createContextInner = async (opts: CreateContextInnerOptions) => {
+  let session: Session | null = null;
+  let user: User | null = null;
+
+  const token = opts.authorization?.replace("Bearer ", "").trim() ?? null;
+
+  if (token) {
+    try {
+      const verifiedToken = await clerkClient.verifyToken(token);
+
+      session = await clerkClient.sessions.getSession(verifiedToken.sid);
+
+      user = await db.user.findUnique({
+        where: { clerkId: session.userId },
+      });
+
+      if (!user) {
+        const clerkUser = await clerkClient.users.getUser(session.userId);
+
+        user = await db.user.create({
+          data: {
+            email: clerkUser.emailAddresses[0]?.emailAddress ?? "",
+            name: clerkUser.username ?? "",
+            clerkId: session.userId,
+          },
+        });
+      }
+
+      return {
+        db,
+        auth: { session, user },
+      };
+    } catch {
+      return { db };
+    }
+  }
 
   return {
-    // session,
     db,
-    // token: authToken,
+  };
+};
+
+export const createContext = async (opts: CreateContextOpts) => {
+  const innerContext = await createContextInner({
+    authorization:
+      opts.req.headers.authorization ??
+      opts.info.connectionParams?.Authorization,
+    ...opts,
+  });
+
+  return {
+    ...innerContext,
+    req: opts.req,
+    res: opts.res,
   };
 };
 
@@ -52,7 +79,7 @@ export const createTRPCContext = (_opts: {
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
+const t = initTRPC.context<typeof createContextInner>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => ({
     ...shape,
@@ -124,14 +151,14 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  */
 export const protectedProcedure = t.procedure
   .use(timingMiddleware)
-  .use(({ ctx: _ctx, next }) => {
-    // if (!ctx.session?.user) {
-    //   throw new TRPCError({ code: "UNAUTHORIZED" });
-    // }
+  .use(async ({ ctx, next }) => {
+    if (process.env.NODE_ENV === "test") {
+      return next();
+    }
 
-    return next({
-      ctx: {
-        // session: { ...ctx.session, user: ctx.session.user },
-      },
-    });
+    if (!ctx.auth) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    return next();
   });
