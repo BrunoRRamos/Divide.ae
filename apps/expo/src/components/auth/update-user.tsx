@@ -1,12 +1,15 @@
 import { useMemo, useState } from "react";
-import { ToastAndroid, View } from "react-native";
+import { View } from "react-native";
+import toast from "react-native-toast-message";
 import { router } from "expo-router";
-import { useUser } from "@clerk/clerk-expo";
+import { isClerkAPIResponseError, useUser } from "@clerk/clerk-expo";
 import { FormikProvider, useFormik } from "formik";
 import * as yup from "yup";
 
+import type { ClerkAPIResponseError } from "@clerk/shared/error";
+
+import type { HandleSubmit } from "~/components/form/types";
 import { TextField } from "~/components/form/TextField";
-import { HandleSubmit } from "~/components/form/types";
 import { Button, Text } from "~/components/ui";
 
 export function EditProfileForm() {
@@ -15,10 +18,9 @@ export function EditProfileForm() {
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Nome do usuário é obrigatório"),
-    currentPassword: yup.string().when("newPassword", (newPassword, schema) => {
-      return newPassword[0]?.length
-        ? schema.required("Senha atual é necessária")
-        : schema;
+    currentPassword: yup.string().when("newPassword", {
+      is: (newPassword: string) => newPassword[0]?.length,
+      then: (schema) => schema.required("Senha atual é necessária"),
     }),
     newPassword: yup
       .string()
@@ -27,8 +29,8 @@ export function EditProfileForm() {
 
   const initialValues = useMemo(
     () => ({
-      name: user?.username || "",
-      email: user?.emailAddresses[0]?.emailAddress || "",
+      name: user?.username ?? "",
+      email: user?.emailAddresses[0]?.emailAddress ?? "",
       currentPassword: "",
       newPassword: "",
     }),
@@ -44,7 +46,7 @@ export function EditProfileForm() {
     }
     setLoading(true);
     try {
-      const updates: any = {};
+      const updates: Record<string, string> = {};
 
       if (values.name) {
         if (values.name !== user?.username) {
@@ -62,28 +64,31 @@ export function EditProfileForm() {
         await user?.update(updates);
       }
 
-      ToastAndroid.showWithGravity(
-        "Perfil atualizado com sucesso!",
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER,
-      );
+      toast.show({
+        type: "success",
+        text1: "Perfil atualizado com sucesso!",
+      });
 
       router.replace("/");
-    } catch (e: any) {
-      if (e.errors) {
-        console.log(e.errors);
-        if (e.errors[0]?.code === "form_password_validation_failed") {
-          helpers.setFieldError("currentPassword", "Senha atual incorreta.");
-        } else if (e.errors[0]?.code === "form_password_pwned") {
-          helpers.setFieldError("newPassword", "A nova senha é muito fraca.");
-        } else {
-          helpers.setStatus({ general: "Erro ao atualizar usuário." });
+    } catch (err) {
+      if (isClerkAPIResponseError(err)) {
+        const e: ClerkAPIResponseError = err;
+
+        if (e.errors.length) {
+          console.log(e.errors);
+          if (e.errors[0]?.code === "form_password_validation_failed") {
+            helpers.setFieldError("currentPassword", "Senha atual incorreta.");
+          } else if (e.errors[0]?.code === "form_password_pwned") {
+            helpers.setFieldError("newPassword", "A nova senha é muito fraca.");
+          } else {
+            helpers.setStatus({ general: "Erro ao atualizar usuário." });
+          }
+
+          toast.show({
+            type: "error",
+            text1: "Erro ao atualizar usuário!",
+          });
         }
-        ToastAndroid.showWithGravity(
-          "Erro ao atualizar usuário!",
-          ToastAndroid.SHORT,
-          ToastAndroid.CENTER,
-        );
       }
     } finally {
       setLoading(false);
