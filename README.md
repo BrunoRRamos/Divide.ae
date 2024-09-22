@@ -15,7 +15,7 @@
    pnpm i
    ```
 
-3. **Set up your env variables according to the .env.example file**
+3. **Set up your environment variables according to the .env.example file, and add the environment variables available in item 7.**
 
 4. **In the root of /apps/expo, adjust your .env file with the environment variables available in item 7 of the document**
 
