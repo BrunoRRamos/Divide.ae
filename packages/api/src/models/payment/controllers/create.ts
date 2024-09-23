@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { publisherRedis } from "../../../lib/redis";
 import { protectedProcedure } from "../../../trpc";
 
 const createPaymentInput = z.object({
@@ -59,11 +60,19 @@ export const createPaymentProcedure = protectedProcedure
         });
       });
 
-    return ctx.db.payment.create({
+    const createdPayment = await ctx.db.payment.create({
       data: {
         value,
+        accepted: true,
         user: { connect: { id: userId } },
         group: { connect: { id: groupId } },
       },
     });
+
+    await publisherRedis.publish(
+      `group-${createdPayment.groupId}`,
+      JSON.stringify({ id: createdPayment.groupId }),
+    );
+
+    return createdPayment;
   });
