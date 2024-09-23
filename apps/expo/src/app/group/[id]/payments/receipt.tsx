@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, Platform, Text, TouchableOpacity, View } from "react-native";
+import { Platform, Text, TouchableOpacity, View } from "react-native";
 import toast from "react-native-toast-message";
 import * as Camera from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
@@ -17,9 +17,8 @@ import { supabase } from "~/lib/supabase";
 import { api } from "~/utils/api";
 
 export default function PaymentReceipt() {
-  const [receiptAttached, setReceiptAttached] = useState(false);
-  const [fileName, setFileName] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [asset, setAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const params = useLocalSearchParams();
   const groupId = (params.id ?? "") as string;
 
@@ -32,9 +31,10 @@ export default function PaymentReceipt() {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== ImagePicker.PermissionStatus.GRANTED) {
-        Alert.alert(
-          "Desculpe, precisamos de permissão para acessar a galeria!",
-        );
+        toast.show({
+          type: "error",
+          text1: "Please grant galery permissions",
+        });
         return;
       }
     }
@@ -49,19 +49,7 @@ export default function PaymentReceipt() {
       const asset = result.assets[0];
 
       if (asset) {
-        setFileName(asset.fileName ?? "");
-        const { id } = await createPayment({
-          groupId,
-          value: 100,
-        });
-        await createReceipt({
-          paymentId: id,
-          fileName: asset.fileName ?? "",
-          uri: asset.uri,
-          ext: asset.type ?? "image/jpeg",
-        });
-        await uploadImage(asset);
-        setReceiptAttached(true);
+        setAsset(asset);
       } else {
         toast.show({ type: "error", text1: "Could not get image URI" });
       }
@@ -94,19 +82,7 @@ export default function PaymentReceipt() {
       ) {
         const asset = result.assets[0];
         if (asset) {
-          setFileName(asset.fileName ?? "");
-          const { id } = await createPayment({
-            groupId,
-            value: 100,
-          });
-          await createReceipt({
-            paymentId: id,
-            fileName: asset.fileName ?? "",
-            uri: asset.uri,
-            ext: asset.type ?? "image/jpeg",
-          });
-          await uploadImage(asset);
-          setReceiptAttached(true);
+          setAsset(asset);
         } else {
           toast.show({ type: "error", text1: "Could not get image URI" });
         }
@@ -140,6 +116,25 @@ export default function PaymentReceipt() {
     }
   };
 
+  const onPressFinish = async () => {
+    if (!asset) return;
+    const { id } = await createPayment({
+      groupId,
+      value: 100,
+    });
+    await createReceipt({
+      paymentId: id,
+      fileName: asset.fileName ?? "",
+      uri: asset.uri,
+      ext: asset.type ?? "image/jpeg",
+    });
+    await uploadImage(asset);
+    router.push({
+      pathname: "/group/[id]/payments/success",
+      params: { id: groupId },
+    });
+  };
+
   return (
     <ScreenView className="flex justify-center">
       <TouchableOpacity
@@ -170,11 +165,11 @@ export default function PaymentReceipt() {
         <Camera.CameraView facing="back" className="flex-1"></Camera.CameraView>
       </View>
       <View className="mt-6">
-        {receiptAttached ? (
+        {asset ? (
           <View className="flex-row items-center">
             <FileText size={24} color="gray" />
             <Text className="ml-2 text-lg">
-              Comprovante: {fileName || "Foto anexada"}
+              Comprovante: {asset.fileName ?? "Foto anexada"}
             </Text>
           </View>
         ) : (
@@ -187,7 +182,8 @@ export default function PaymentReceipt() {
         )}
       </View>
       <Button
-        disabled={!receiptAttached}
+        disabled={!asset}
+        onPress={onPressFinish}
         loading={uploading}
         className={`mt-10 w-full items-center rounded-lg p-0`}
       >

@@ -78,7 +78,7 @@ model Payment {
   groupId String
   group   Group  @relation(fields: [groupId], references: [id])
 
-  receipts Receipt[]
+  receipts Receipt?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -91,7 +91,7 @@ model Receipt {
   ext      String
 
   payment   Payment @relation(fields: [paymentId], references: [id])
-  paymentId String
+  paymentId String  @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
