@@ -1,19 +1,22 @@
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { CreditCard, DollarSign, QrCode } from "lucide-react-native";
 
+import { ScreenView } from "~/components/layout/ScreenView";
 import { Button } from "~/components/ui";
 
 export default function PaymentMethods() {
   const [selected, setSelected] = useState<string | null>(null);
+
+  const params = useLocalSearchParams();
 
   const handleSelect = (method: "Pix" | "Cartao" | "Dinheiro") => {
     setSelected(method);
   };
 
   return (
-    <View className="flex justify-center gap-8 p-6">
+    <ScreenView className="flex justify-center gap-8 p-6">
       <Text className="text-xl">Qual será a forma de pagamento?</Text>
       <View className="flex flex-col gap-4 space-y-4">
         <TouchableOpacity
@@ -55,7 +58,10 @@ export default function PaymentMethods() {
       </View>
       <Button
         onPress={() => {
-          router.push("/payments/receipt");
+          router.push({
+            pathname: "/group/[id]/payments/receipt",
+            params: { id: params.id as string },
+          });
         }}
         className="items-center rounded-lg p-4"
         disabled={!selected}
@@ -63,6 +69,6 @@ export default function PaymentMethods() {
       >
         <Text>Avançar</Text>
       </Button>
-    </View>
+    </ScreenView>
   );
 }

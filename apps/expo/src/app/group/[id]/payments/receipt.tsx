@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, Platform, Text, TouchableOpacity, View } from "react-native";
+import toast from "react-native-toast-message";
 import * as Camera from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
@@ -46,6 +47,7 @@ export default function PaymentReceipt() {
 
     if (!result.canceled && result.assets.length && result.assets.length > 0) {
       const asset = result.assets[0];
+
       if (asset) {
         setFileName(asset.fileName ?? "");
         const { id } = await createPayment({
@@ -61,10 +63,10 @@ export default function PaymentReceipt() {
         await uploadImage(asset);
         setReceiptAttached(true);
       } else {
-        Alert.alert("Erro", "Não foi possível obter a URI da imagem.");
+        toast.show({ type: "error", text1: "Could not get image URI" });
       }
     } else {
-      Alert.alert("Nenhuma imagem selecionada");
+      toast.show({ type: "error", text1: "No image selected" });
     }
   };
 
@@ -72,9 +74,10 @@ export default function PaymentReceipt() {
     if (Platform.OS !== "web") {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== ImagePicker.PermissionStatus.GRANTED) {
-        Alert.alert(
-          "Desculpe, precisamos de permissão para acessar a galeria!",
-        );
+        toast.show({
+          type: "error",
+          text1: "Please grant camera permissions",
+        });
         return;
       }
 
@@ -105,7 +108,7 @@ export default function PaymentReceipt() {
           await uploadImage(asset);
           setReceiptAttached(true);
         } else {
-          Alert.alert("Erro", "Não foi possível obter a URI da imagem.");
+          toast.show({ type: "error", text1: "Could not get image URI" });
         }
       }
     }
@@ -117,7 +120,7 @@ export default function PaymentReceipt() {
       const filePath = `${image.fileName}`;
 
       if (!image.uri) {
-        Alert.alert("Erro desconhecido");
+        toast.show({ type: "error", text1: "Could not get image URI" });
       }
 
       const arraybuffer = await fetch(image.uri).then((res) =>
@@ -128,14 +131,17 @@ export default function PaymentReceipt() {
         contentType: image.mimeType ?? "image/jpeg",
       });
     } catch {
-      Alert.alert("An error occurred");
+      toast.show({
+        type: "error",
+        text1: "Unexpected error, please talk to the support",
+      });
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <ScreenView className="flex items-center">
+    <ScreenView className="flex justify-center">
       <TouchableOpacity
         onPress={() => {
           router.push("/");
