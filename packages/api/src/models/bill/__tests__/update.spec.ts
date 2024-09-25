@@ -49,7 +49,6 @@ it("should update a bill", async () => {
     value: 1200.0,
     quantity: 1,
     recurringPeriod: 365,
-    myUserId: user.id,
   });
 
   expect(updatedBill).toEqual(
@@ -120,7 +119,6 @@ it("should not update a bill that does not belong to the user", async () => {
       value: 1200.0,
       quantity: 1,
       recurringPeriod: 365,
-      myUserId: user2.id,
     }),
   ).rejects.toThrowError("User is not the owner of the bill");
 });

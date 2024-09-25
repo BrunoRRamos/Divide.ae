@@ -1,8 +1,7 @@
 import { useState } from "react";
 
 import type { Group } from "~/app/group/[id]";
-import { Text } from "../ui";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger, Text } from "../ui";
 import { GroupBills } from "./GroupBills";
 import { GroupPayments } from "./GroupPayments";
 
@@ -14,7 +13,7 @@ export function GroupTabs({ group }: GroupTabsProps) {
   const [value, setValue] = useState("bills");
 
   return (
-    <Tabs value={value} onValueChange={setValue}>
+    <Tabs value={value} onValueChange={setValue} className="flex-1 gap-4">
       <TabsList className="flex-row">
         <TabsTrigger value="bills">
           <Text>Bills</Text>
@@ -23,7 +22,7 @@ export function GroupTabs({ group }: GroupTabsProps) {
           <Text>Payments</Text>
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="bills">
+      <TabsContent value="bills" className="flex-1">
         <GroupBills group={group} />
       </TabsContent>
       <TabsContent value="payments">
