@@ -25,7 +25,7 @@ export function GroupBills({ group }: GroupBillsProps) {
 
   if (group.bills.length === 0) {
     return (
-      <View className="h-fullitems-center flex justify-center gap-6">
+      <View className="flex h-full items-center justify-center gap-6">
         <View className="flex gap-2">
           <Typograhy.H4 className="text-center">No bills yet</Typograhy.H4>
           <Typograhy.P className="text-center">

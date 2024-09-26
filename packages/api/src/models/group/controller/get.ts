@@ -9,7 +9,11 @@ import { subscriberRedis } from "../../../lib/redis";
 import { protectedProcedure } from "../../../trpc";
 
 type GroupGetPayload = Prisma.GroupGetPayload<{
-  include: { bills: { include: { user: true } }; payments: true; users: true };
+  include: {
+    bills: { include: { user: true } };
+    payments: { include: { user: true; receipts: true } };
+    users: true;
+  };
 }>;
 
 type GroupGetPayloadWithCalculatedValues = GroupGetPayload & {
@@ -17,7 +21,7 @@ type GroupGetPayloadWithCalculatedValues = GroupGetPayload & {
   totalPaid: number;
 };
 
-const groupCalculateValues = (
+export const groupCalculateValues = (
   group: Prisma.GroupGetPayload<{
     include: { bills: true; payments: true; users: true };
   }>,
@@ -45,7 +49,10 @@ export const getOneGroupProcedure = protectedProcedure
         },
         include: {
           users: true,
-          payments: true,
+          payments: {
+            orderBy: { createdAt: "desc" },
+            include: { user: true, receipts: true },
+          },
           bills: { orderBy: { createdAt: "desc" }, include: { user: true } },
         },
       })
@@ -99,7 +106,13 @@ export const groupSubscriptionProcedure = protectedProcedure
             },
             include: {
               users: true,
-              payments: true,
+              payments: {
+                orderBy: { createdAt: "desc" },
+                include: {
+                  user: true,
+                  receipts: true,
+                },
+              },
               bills: {
                 orderBy: { createdAt: "desc" },
                 include: { user: true },

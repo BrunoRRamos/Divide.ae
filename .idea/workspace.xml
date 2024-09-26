@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="69d55a3c-6691-410f-bde8-80d3155a1201" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/expo/src/components/layout/Loading.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/apps/expo/src/hooks/useUser.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/lib/clerk.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/__tests__/create.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/__tests__/delete.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/__tests__/get.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/__tests__/update.spec.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/controllers/create.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/controllers/delete.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/controllers/get.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/controllers/update.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/controllers/utils.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/api/src/models/bill/router.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/db/prisma/migrations/20240913002158_/migration.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/db/prisma/migrations/20240915011136_/migration.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/packages/db/prisma/migrations/20240915221111_/migration.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tooling/github/package-lock.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tooling/typescript/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/expo/metro.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/apps/expo/metro.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/expo/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/expo/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/expo/src/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/expo/src/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/expo/src/components/auth/signInForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/expo/src/components/auth/signInForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/expo/src/components/auth/signUpForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/expo/src/components/auth/signUpForm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/expo/src/components/layout/ScreenView.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/expo/src/components/layout/ScreenView.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/expo/src/components/ui/button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/expo/src/components/ui/button.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/expo/src/utils/api.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/apps/expo/src/utils/api.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/server/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/server/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/group/__tests__/create.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/group/__tests__/create.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/group/__tests__/delete.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/group/__tests__/delete.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/group/__tests__/get.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/group/__tests__/get.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/group/__tests__/update.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/group/__tests__/update.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/group/controller/create.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/group/controller/create.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/group/controller/delete.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/group/controller/delete.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/payment/__tests__/create.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/payment/__tests__/create.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/payment/__tests__/delete.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/payment/__tests__/delete.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/payment/__tests__/get.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/payment/__tests__/get.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/payment/__tests__/update.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/payment/__tests__/update.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/user/__tests__/create.spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/user/__tests__/delete.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/user/__tests__/delete.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/user/__tests__/get.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/user/__tests__/get.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/user/__tests__/update.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/user/__tests__/update.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/user/controllers/create.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/user/controllers/get.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/user/controllers/get.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/models/user/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/models/user/router.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/root.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/root.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/router/auth.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/src/trpc.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/src/trpc.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/api/vitest.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/api/vitest.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/db/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/packages/db/prisma/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/db/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/db/src/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pnpm-lock.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pnpm-lock.yaml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 6
+}]]></component>
+  <component name="ProjectId" id="2mGmo86f1KgpRg0xe488ru48tE1" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "Merging 49-fluxo-de-pagamento",
+    "kotlin-language-version-configured": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <servers />
+  </component>
+</project>
