@@ -14,8 +14,9 @@ export const TextField = forwardRef<
     name: string;
     label: string;
     containerClassName?: string;
+    disabled?: boolean;
   }
->(({ name, label, containerClassName, ...props }, ref) => {
+>(({ name, label, containerClassName, disabled, ...props }, ref) => {
   const form = useFormikContext<Record<string, unknown>>();
   const value = form.values[name] as string | undefined;
 
@@ -47,6 +48,7 @@ export const TextField = forwardRef<
         value={String(value)}
         ref={ref}
         component={Input}
+        editable={!disabled}
         {...props}
       />
       <ErrorMessage name={name}>
