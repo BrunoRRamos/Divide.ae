@@ -18,9 +18,10 @@ export function EditProfileForm() {
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Nome do usuário é obrigatório"),
-    currentPassword: yup.string().when("newPassword", {
-      is: (newPassword: string) => newPassword[0]?.length,
-      then: (schema) => schema.required("Senha atual é necessária"),
+    currentPassword: yup.string().when("newPassword", (newPassword, schema) => {
+      return newPassword[0]?.length
+        ? schema.required("Senha atual é necessária")
+        : schema;
     }),
     newPassword: yup
       .string()
