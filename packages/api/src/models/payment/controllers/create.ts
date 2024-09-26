@@ -4,7 +4,6 @@ import { z } from "zod";
 import { protectedProcedure } from "../../../trpc";
 
 const createPaymentInput = z.object({
-  value: z.number().min(0.01),
   userId: z.string(),
   groupId: z.string(),
 });
@@ -12,7 +11,32 @@ const createPaymentInput = z.object({
 export const createPaymentProcedure = protectedProcedure
   .input(createPaymentInput)
   .mutation(async ({ input, ctx }) => {
-    const { userId, groupId, value } = input;
+    const groupData = await ctx.db.group.findUnique({
+      where: {
+        id: input.groupId,
+        users: { some: { id: ctx.auth?.user.id } },
+      },
+      include: {
+        bills: true,
+      },
+    });
+
+    if (!groupData) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Group not found or you don't have access",
+      });
+    }
+
+    const value =
+      groupData.bills
+        .filter((bills) => bills.userId)
+        .reduce((sum, bill) => sum + bill.value, 0) *
+        (1 + (groupData.variableTax ?? 0)) +
+      (groupData.fixedTax ?? 0);
+
+    const { userId, groupId } = input;
+
     await ctx.db.user
       .findUniqueOrThrow({
         where: { id: userId },

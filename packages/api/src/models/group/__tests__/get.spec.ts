@@ -1,7 +1,8 @@
 import { PrismockClient } from "prismock";
 import { expect, it, vi } from "vitest";
 
-import { createCaller, createContextInner } from "../../..";
+import { Context, createCaller, createContextInner } from "../../..";
+import { db } from "@/db";
 
 vi.mock("@/db", () => {
   return { db: new PrismockClient() };
@@ -16,21 +17,30 @@ it("Should get a group by id with inexistent id", async () => {
 });
 
 it("Should get a group by id", async () => {
-  const ctx = await createContextInner({});
-  const caller = createCaller(ctx);
-  const baseGroup = await caller.group.create.one({
-    name: "Contas do mes",
-    description: "Organizar as contas do mes",
-    fixedTax: 0,
-    variableTax: 0,
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
   });
+
+  const caller = createCaller({ db, auth: { user } } as Context);
+
+  const baseGroup = await caller.group.create.one({
+    name: "Aniversario de Caique",
+    description: "Comprar torta, salgados e refrigerante",
+    fixedTax: 0,
+  });
+  
   const getById = await caller.group.get.one({ id: baseGroup.id });
   expect(getById).toEqual(
     expect.objectContaining({
-      name: "Contas do mes",
-      description: "Organizar as contas do mes",
+      name: "Aniversario de Caique",
+      description: "Comprar torta, salgados e refrigerante",
     }),
   );
+  
 });
 
 it("Should get all groups with no one group regsitred", async () => {
