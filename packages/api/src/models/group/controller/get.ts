@@ -81,9 +81,19 @@ export const getAllGroupsProcedure = protectedProcedure.query(
           { userId: ctx.auth?.user.id },
         ],
       },
+      include: {
+        bills: { include: { user: true } },
+        payments: true,
+        users: true,
+      },
     });
 
-    return groups;
+    return await Promise.all(
+      groups.map((group) => ({
+        ...group,
+        ...groupCalculateValues(group),
+      })),
+    );
   },
 );
 
