@@ -1,8 +1,8 @@
-import { useState } from "react";
 import { View } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import toast from "react-native-toast-message";
+import { documentDirectory, downloadAsync } from "expo-file-system";
 import { Link } from "expo-router";
+import { shareAsync } from "expo-sharing";
 import { Download } from "lucide-react-native";
 
 import type { Group } from "~/app/group/[id]";
@@ -49,8 +49,6 @@ interface GroupItemProps {
 }
 
 export function GroupItem({ item }: GroupItemProps) {
-  const [link, setLink] = useState<string | null>(null);
-
   const formatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
@@ -58,28 +56,31 @@ export function GroupItem({ item }: GroupItemProps) {
   });
 
   const onDownload = async () => {
-    const { data, error } = await supabase.storage
-      .from("payments")
-      .download(item.receipts?.fileName ?? "");
-
-    if (error) {
-      toast.show({ type: "error", text1: error.message });
+    if (!item.receipts) {
       return;
     }
 
-    const url = URL.createObjectURL(data);
-    setLink(url);
+    const { data } = supabase.storage
+      .from("payments")
+      .getPublicUrl(item.receipts.fileName);
+
+    const url = data.publicUrl;
+
+    const result = await downloadAsync(
+      url,
+      documentDirectory + item.receipts.fileName,
+    );
+
+    void shareAsync(result.uri);
   };
 
   return (
-    <View className="mb-2 flex w-full flex-row items-center justify-between rounded-lg border px-2 py-4 text-lg">
+    <View className="mb-2 flex w-full flex-row items-center justify-between rounded-lg bg-gray-100 px-4 py-4 text-lg">
       <Text>{item.createdAt.toLocaleDateString()}</Text>
       <Text className="font-semibold">{formatter.format(item.value)}</Text>
-      <a href={link ?? ""} target="_blank">
-        <Button onPress={onDownload}>
-          <Download size={16} color="black" />
-        </Button>
-      </a>
+      <Button onPress={onDownload}>
+        <Download size={16} color="black" />
+      </Button>
     </View>
   );
 }

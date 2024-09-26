@@ -199,6 +199,9 @@ importers:
       expo-secure-store:
         specifier: ^13.0.2
         version: 13.0.2(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(encoding@0.1.13))
+      expo-sharing:
+        specifier: ^12.0.1
+        version: 12.0.1(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(encoding@0.1.13))
       expo-splash-screen:
         specifier: ~0.27.5
         version: 0.27.5(encoding@0.1.13)(expo-modules-autolinking@1.11.2)(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(encoding@0.1.13))
@@ -5349,6 +5352,11 @@ packages:
 
   expo-secure-store@13.0.2:
     resolution: {integrity: sha512-3QYgoneo8p8yeeBPBiAfokNNc2xq6+n8+Ob4fAlErEcf4H7Y72LH+K/dx0nQyWau2ZKZUXBxyyfuHFyVKrEVLg==}
+    peerDependencies:
+      expo: '*'
+
+  expo-sharing@12.0.1:
+    resolution: {integrity: sha512-wBT+WeXwapj/9NWuLJO01vi9bdlchYu/Q/xD8slL/Ls4vVYku8CPqzkTtDFcjLrjtlJqyeHsdQXwKLvORmBIew==}
     peerDependencies:
       expo: '*'
 
@@ -15271,6 +15279,10 @@ snapshots:
       - typescript
 
   expo-secure-store@13.0.2(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(encoding@0.1.13)):
+    dependencies:
+      expo: 51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(encoding@0.1.13)
+
+  expo-sharing@12.0.1(expo@51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(encoding@0.1.13)):
     dependencies:
       expo: 51.0.32(@babel/core@7.25.2)(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(encoding@0.1.13)
 
