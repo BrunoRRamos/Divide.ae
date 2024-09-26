@@ -26,11 +26,10 @@ model User {
   payments              Payment[]
   myGroups              Group[] // Groups that the user created
   receivedNotifications Notification[]
+  bills                 Bill[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Bill      Bill[]
-  Receipt   Receipt[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Group {
@@ -48,9 +47,8 @@ model Group {
   userId   String
   user     User      @relation(fields: [userId], references: [id])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Receipt   Receipt[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Bill {
@@ -70,8 +68,6 @@ model Bill {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Receipt   Receipt? @relation(fields: [receiptId], references: [id])
-  receiptId String?
 }
 
 model Payment {
@@ -99,13 +95,6 @@ model Receipt {
 
   payment   Payment @relation(fields: [paymentId], references: [id])
   paymentId String  @unique
-
-  bills Bill[]
-
-  user    User   @relation(fields: [userId], references: [id])
-  userId  String
-  group   Group  @relation(fields: [groupId], references: [id])
-  groupId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

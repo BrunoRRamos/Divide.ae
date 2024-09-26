@@ -20,9 +20,10 @@ export default function Home() {
     setLoading(false);
   };
 
-  const paymentQuery = api.payment.get.many.user.useQuery(user?.id ?? "", {
-    enabled: !!user?.id,
-  });
+  const { data: userData, isLoading: userQueryLoading } =
+    api.user.get.one.useQuery({
+      clerkId: user?.id,
+    });
 
   if (!clerk.isLoaded) {
     return (
@@ -75,14 +76,16 @@ export default function Home() {
       <View className="flex flex-col gap-2">
         <Text className="text-xl text-black">Peding payments</Text>
         <Text className="mb-9 text-2xl font-bold text-black">
-          {paymentQuery.isLoading ? "Loading..." : `${formatCurrency(0)}`}
+          {userQueryLoading
+            ? "Loading..."
+            : `${formatCurrency(userData?.pendingValue ?? 0)}`}
         </Text>
       </View>
-      {paymentQuery.isLoading ? (
-        <Text>Loading Payments</Text>
+      {userQueryLoading || groupListQuery.isLoading ? (
+        <Text>Loading Groups</Text>
       ) : groupListQuery.data?.length === 0 ? (
         <View className="mt-8 items-center justify-between">
-          <Text>No pending payments</Text>
+          <Text>No groups</Text>
         </View>
       ) : (
         <FlatList
