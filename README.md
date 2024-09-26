@@ -35,7 +35,7 @@
    ```bash
    pnpm dev
    ```
-
+8. **PONTOS DE ATENÇÃO: Se tiver estiver com o expo instalado no seu celular, ao rodar o comando acima, entre na aba @/expo#dev do seu terminal e digite s no terminal e leia o qrCode. Se tiver usando um emulador, como o AndroidStudio, digite a no terminal**
 ---
 
 ## To Run the Tests
