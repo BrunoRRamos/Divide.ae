@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { Tabs } from "expo-router";
-import { Home, Plus, User } from "lucide-react-native";
+import { Bell, Home, Plus, User } from "lucide-react-native";
 
 import { cn } from "~/lib/utils";
 
@@ -9,6 +9,7 @@ export default function TabLayout() {
     { name: "index", Icon: Home },
     { name: "new-group", Icon: Plus },
     { name: "profile", Icon: User },
+    { name: "notifications", Icon: Bell },
   ];
 
   return (
