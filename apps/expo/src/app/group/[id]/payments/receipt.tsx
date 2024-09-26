@@ -17,6 +17,8 @@ import { supabase } from "~/lib/supabase";
 import { api } from "~/utils/api";
 
 export default function PaymentReceipt() {
+  const utils = api.useUtils();
+
   const [uploading, setUploading] = useState(false);
   const [asset, setAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const params = useLocalSearchParams();
@@ -120,7 +122,6 @@ export default function PaymentReceipt() {
     if (!asset) return;
     const { id } = await createPayment({
       groupId,
-      value: 100,
     });
     await createReceipt({
       paymentId: id,
@@ -129,10 +130,13 @@ export default function PaymentReceipt() {
       ext: asset.type ?? "image/jpeg",
     });
     await uploadImage(asset);
-    router.push({
+    await utils.group.get.one.invalidate({ id: groupId });
+
+    router.replace({
       pathname: "/group/[id]/payments/success",
       params: { id: groupId },
     });
+    router.dismissAll();
   };
 
   return (

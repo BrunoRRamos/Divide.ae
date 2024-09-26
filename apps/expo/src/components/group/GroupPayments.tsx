@@ -6,8 +6,10 @@ import { shareAsync } from "expo-sharing";
 import { Download } from "lucide-react-native";
 
 import type { Group } from "~/app/group/[id]";
+import { formatCurrency } from "~/lib/currency";
 import { supabase } from "~/lib/supabase";
 import { Button, Text } from "../ui";
+import { UserAvatar } from "../user/UserAvatar";
 
 interface GroupBillsProps {
   group: Group;
@@ -32,7 +34,7 @@ export function GroupPayments({ group }: GroupBillsProps) {
           data={group.payments}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
-            return <GroupItem item={item} key={item.id} />;
+            return <PaymentItem item={item} key={item.id} />;
           }}
         />
       ) : (
@@ -44,11 +46,11 @@ export function GroupPayments({ group }: GroupBillsProps) {
 
 type Payment = GroupBillsProps["group"]["payments"][number];
 
-interface GroupItemProps {
+interface PaymentItemProps {
   item: Payment;
 }
 
-export function GroupItem({ item }: GroupItemProps) {
+export function PaymentItem({ item }: PaymentItemProps) {
   const formatter = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
@@ -75,9 +77,14 @@ export function GroupItem({ item }: GroupItemProps) {
   };
 
   return (
-    <View className="mb-2 flex w-full flex-row items-center justify-between rounded-lg bg-gray-100 px-4 py-4 text-lg">
-      <Text>{item.createdAt.toLocaleDateString()}</Text>
-      <Text className="font-semibold">{formatter.format(item.value)}</Text>
+    <View className="mb-2 flex w-full flex-row items-center justify-between gap-3 rounded-lg bg-gray-100 px-4 py-4 text-lg">
+      <UserAvatar name={item.user.name} />
+      <View>
+        <Text className="text-lg">{item.user.name} made a payment of </Text>
+        <Text className="text-xl font-semibold">
+          {formatCurrency(item.value)}
+        </Text>
+      </View>
       <Button onPress={onDownload}>
         <Download size={16} color="black" />
       </Button>

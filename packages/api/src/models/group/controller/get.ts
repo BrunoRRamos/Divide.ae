@@ -21,7 +21,7 @@ type GroupGetPayloadWithCalculatedValues = GroupGetPayload & {
   totalPaid: number;
 };
 
-const groupCalculateValues = (
+export const groupCalculateValues = (
   group: Prisma.GroupGetPayload<{
     include: { bills: true; payments: true; users: true };
   }>,

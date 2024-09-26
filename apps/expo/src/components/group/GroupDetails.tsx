@@ -32,7 +32,10 @@ export function GroupDetails({ group }: GroupDetailsProps) {
           }).format(group.totalValue)}
         </Text>
       </View>
-      <Progress value={group.totalPaid % 100} className="w-full" />
+      <Progress
+        value={(group.totalPaid / group.totalValue) * 100}
+        className="w-full"
+      />
     </View>
   );
 }
