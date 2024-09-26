@@ -21,7 +21,7 @@ export const getBillById = protectedProcedure
       !(await isUserInGroup({
         ctx,
         groupId: bill.groupId,
-        userId: ctx.auth?.user?.id ?? "",
+        userId: ctx.auth?.user.id ?? "",
       }))
     ) {
       throw new TRPCError({

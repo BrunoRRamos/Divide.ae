@@ -50,6 +50,11 @@ export const createPaymentProcedure = protectedProcedure
       },
     });
 
+    await ctx.db.bill.updateMany({
+      where: { userId: ctx.auth?.user.id, groupId: input.groupId },
+      data: { paymentId: createdPayment.id },
+    });
+
     await publisherRedis.publish(
       `group-${createdPayment.groupId}`,
       JSON.stringify({ id: createdPayment.groupId }),
