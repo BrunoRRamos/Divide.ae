@@ -74,7 +74,7 @@ export default function Home() {
         </View>
       </View>
       <View className="flex flex-col gap-2">
-        <Text className="text-xl text-black">Peding payments</Text>
+        <Text className="text-xl text-black">Pending payments</Text>
         <Text className="mb-9 text-2xl font-bold text-black">
           {userQueryLoading
             ? "Loading..."
