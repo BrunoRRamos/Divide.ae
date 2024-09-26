@@ -31,7 +31,7 @@ export function SignUpForm() {
   });
 
   const initialValues = useMemo<yup.InferType<typeof validationSchema>>(
-    () => ({ email: "", username: "", password: "" }),
+    () => ({ email: "", username: "", password: "", confirmPassword: "" }),
     [],
   );
 

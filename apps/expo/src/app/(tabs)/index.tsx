@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
-import { Redirect } from "expo-router";
+import { Link, Redirect } from "expo-router";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import {
   LucideArrowRight,
@@ -16,8 +16,6 @@ import { api } from "~/utils/api";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   const { user } = useUser();
   const clerk = useAuth();
 
@@ -29,23 +27,6 @@ export default function Home() {
 
   const paymentQuery = api.payment.get.many.user.useQuery(user?.id!, {
     enabled: !!user?.id,
-  });
-
-  const groupIds = paymentQuery.data
-    ? paymentQuery.data
-        .map((payment) => payment.groupId)
-        .filter((value, index, self) => self.indexOf(value) === index)
-    : [];
-
-  const groupQueries = groupIds.map((groupId) =>
-    api.group.get.one.useQuery({ id: groupId }, { enabled: !!groupId }),
-  );
-
-  const groupsMap = new Map();
-  groupQueries.forEach((groupQuery, index) => {
-    if (groupQuery.data) {
-      groupsMap.set(groupIds[index], groupQuery.data);
-    }
   });
 
   if (!clerk.isLoaded) {
@@ -73,6 +54,7 @@ export default function Home() {
 
   const userName = user?.username!;
   const userInitials = getInitials(userName);
+  const groupListQuery = api.group.get.many.useQuery();
 
   return (
     <View className="flex-1 bg-white p-6">
@@ -99,52 +81,57 @@ export default function Home() {
       <Text className="mb-9 text-2xl font-bold text-black">
         {paymentQuery.isLoading
           ? "Carregando..."
-          : `R$ ${paymentQuery.data
-              ?.reduce((sum, payment) => sum + payment.value, 0)
+          : `R$ ${groupListQuery.data
+              ?.reduce((sum, payment) => sum + payment.fixedTax!, 0)
               .toFixed(2)}`}
       </Text>
 
       <ScrollView className="flex-1">
         {paymentQuery.isLoading ? (
           <Text>Carregando pagamentos...</Text>
-        ) : paymentQuery.data?.length === 0 ? (
+        ) : groupListQuery.data?.length === 0 ? (
           <View className="mt-8 items-center justify-between">
             <Text>Não há pagamentos pendentes</Text>
           </View>
         ) : (
-          paymentQuery.data?.map((payment) => {
-            const group = groupsMap.get(payment.groupId);
-            return group ? (
-              <View
-                key={payment.id}
-                className="mb-4 rounded-md border border-gray-300 p-4"
-              >
-                <View className="flex flex-row items-center justify-between">
-                  <Text className="text-lg text-black">{group.name}</Text>
-                  <Text className="text-sm text-gray-600">Aberto</Text>
-                </View>
+          groupListQuery.data?.map((group) => (
+            <View
+              key={group.id}
+              className="mb-4 rounded-md border border-gray-300 p-4"
+            >
+              <Text className="text-lg text-black">{group.name}</Text>
+              <Text className="text-sm text-gray-600">Aberto</Text>
 
-                <View className="mt-2 flex flex-row items-center justify-between">
-                  <Text className="text-lg font-bold text-black">
-                    R$ {payment.value.toFixed(2)}
-                  </Text>
-                  <Text className="text-sm font-bold">
-                    até {new Date(payment.createdAt).toLocaleDateString()}
-                  </Text>
-                </View>
+              <View className="mt-2 flex flex-row items-center justify-between">
+                <Text className="text-lg font-bold text-black">
+                  R$ {group.fixedTax!.toFixed(2)}
+                </Text>
+                <Text className="text-sm font-bold">
+                  até {new Date(group.createdAt).toLocaleDateString("PT-BR")}
+                </Text>
+              </View>
 
-                <View className="mt-2 items-end">
+              <View className="mt-2 items-end">
+                <Link
+                  href={{ pathname: "/group/[id]", params: { id: group.id } }}
+                  asChild
+                >
                   <TouchableOpacity onPress={() => console.log("Seta clicada")}>
                     <LucideArrowRight size={20} color={"#000"} />
                   </TouchableOpacity>
-                </View>
+                </Link>
               </View>
-            ) : null;
-          })
+            </View>
+          ))
         )}
       </ScrollView>
 
       <View className="mb-2 h-px bg-gray-300" />
+
+      {/*   <FlatList
+        data={groupListQuery.data}
+        renderItem={({ item }) => <GroupListItem key={item.id} group={item} />}
+      /> */}
 
       <View className="flex flex-row justify-around py-4">
         <TouchableOpacity onPress={() => console.log("Home")}>
