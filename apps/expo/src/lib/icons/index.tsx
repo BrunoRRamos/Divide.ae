@@ -1,3 +1,4 @@
+export * from "./CheckCircle";
 export * from "./EditIcon";
 export * from "./MinusIcon";
 export * from "./PlusIcon";

@@ -1,6 +1,7 @@
 import type { PrismockClientType } from "prismock/build/main/lib/client";
 import { PrismockClient } from "prismock";
 import { afterAll, beforeAll, expect, it, vi } from "vitest";
+import type { Context } from "../../..";
 
 import { db } from "@/db";
 
@@ -10,7 +11,9 @@ vi.mock("@/db", () => {
   return { db: new PrismockClient() };
 });
 
-let paymentId: string;
+
+let groupId: string;
+let userId: string;
 
 beforeAll(async () => {
   const ctx = await createContextInner({});
@@ -30,13 +33,9 @@ beforeAll(async () => {
     variableTax: 0,
   });
 
-  const payment = await caller.payment.create.one({
-    value: 100,
-    userId: user.id,
-    groupId: group.id,
-  });
-
-  paymentId = payment.id;
+  userId = user.id;
+  groupId = group.id;
+  
 });
 
 afterAll(() => {
@@ -44,14 +43,44 @@ afterAll(() => {
 });
 
 it("should delete a payment", async () => {
-  const ctx = await createContextInner({});
-  const caller = createCaller(ctx);
+  const user = await db.user.create({
+    data: {
+      clerkId: "",
+      name: "Caique",
+      email: "caique.email@gmail.com",
+    },
+  });
 
-  const deletePayment = await caller.payment.delete.one(paymentId);
+  const caller = createCaller({ db, auth: { user } } as Context);
 
+  await caller.group.create.one({
+    name: "Aniversario de Caique",
+    description: "Comprar torta, salgados e refrigerante",
+    fixedTax: 0,
+  });
+
+  await caller.bill.create.one({
+      name: "salgado",
+      value: 50,
+      groupId,
+    });
+
+  await caller.bill.create.one({
+      name: "refrigerante",
+      value: 50,
+      groupId,
+    });
+
+  const payment = await caller.payment.create.one({
+    userId,
+    groupId,
+  });
+
+
+  const deletePayment = await caller.payment.delete.one(payment.id);
   expect(deletePayment).toEqual(
     expect.objectContaining({
-      id: paymentId,
+      id: payment.id,
       value: 100,
     }),
   );
